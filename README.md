@@ -1,31 +1,43 @@
 # Vat Sense Java API Library
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.vat_sense.api/vat-sense-java)](https://central.sonatype.com/artifact/com.vat_sense.api/vat-sense-java/0.0.1)
-[![javadoc](https://javadoc.io/badge2/com.vat_sense.api/vat-sense-java/0.0.1/javadoc.svg)](https://javadoc.io/doc/com.vat_sense.api/vat-sense-java/0.0.1)
+<!-- x-release-please-start-version -->
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.vatsense/vat-sense-java)](https://central.sonatype.com/artifact/com.vatsense/vat-sense-java/0.1.0)
+[![javadoc](https://javadoc.io/badge2/com.vatsense/vat-sense-java/0.1.0/javadoc.svg)](https://javadoc.io/doc/com.vatsense/vat-sense-java/0.1.0)
+
+<!-- x-release-please-end -->
 
 The Vat Sense Java SDK provides convenient access to the [Vat Sense REST API](https://vatsense.com) from applications written in Java.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
-The REST API documentation can be found on [vatsense.com](https://vatsense.com). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.vat_sense.api/vat-sense-java/0.0.1).
+<!-- x-release-please-start-version -->
+
+The REST API documentation can be found on [vatsense.com](https://vatsense.com). Javadocs are available on [javadoc.io](https://javadoc.io/doc/com.vatsense/vat-sense-java/0.1.0).
+
+<!-- x-release-please-end -->
 
 ## Installation
+
+<!-- x-release-please-start-version -->
 
 ### Gradle
 
 ```kotlin
-implementation("com.vat_sense.api:vat-sense-java:0.0.1")
+implementation("com.vatsense:vat-sense-java:0.1.0")
 ```
 
 ### Maven
 
 ```xml
 <dependency>
-  <groupId>com.vat_sense.api</groupId>
+  <groupId>com.vatsense</groupId>
   <artifactId>vat-sense-java</artifactId>
-  <version>0.0.1</version>
+  <version>0.1.0</version>
 </dependency>
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -34,10 +46,10 @@ This library requires Java 8 or later.
 ## Usage
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
-import com.vat_sense.api.models.rates.RateListParams;
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.models.rates.RateListParams;
+import com.vatsense.models.rates.RateListResponse;
 
 // Configures using the `vatsense.username`, `vatsense.password` and `vatsense.baseUrl` system properties
 // Or configures using the `VAT_SENSE_USERNAME`, `VAT_SENSE_PASSWORD` and `VAT_SENSE_BASE_URL` environment variables
@@ -51,8 +63,8 @@ RateListResponse rates = client.rates().list();
 Configure the client using system properties or environment variables:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 
 // Configures using the `vatsense.username`, `vatsense.password` and `vatsense.baseUrl` system properties
 // Or configures using the `VAT_SENSE_USERNAME`, `VAT_SENSE_PASSWORD` and `VAT_SENSE_BASE_URL` environment variables
@@ -62,8 +74,8 @@ VatSenseClient client = VatSenseOkHttpClient.fromEnv();
 Or manually:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
     .username("My Username")
@@ -74,8 +86,8 @@ VatSenseClient client = VatSenseOkHttpClient.builder()
 Or using a combination of the two approaches:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
     // Configures using the `vatsense.username`, `vatsense.password` and `vatsense.baseUrl` system properties
@@ -104,7 +116,7 @@ System properties take precedence over environment variables.
 To temporarily use a modified client configuration, while reusing the same connection and thread pools, call `withOptions()` on any client or service:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
+import com.vatsense.client.VatSenseClient;
 
 VatSenseClient clientWithOptions = client.withOptions(optionsBuilder -> {
     optionsBuilder.baseUrl("https://example.com");
@@ -133,10 +145,10 @@ Because each class is immutable, builder modification will _never_ affect alread
 The default client is synchronous. To switch to asynchronous execution, call the `async()` method:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
-import com.vat_sense.api.models.rates.RateListParams;
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.models.rates.RateListParams;
+import com.vatsense.models.rates.RateListResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `vatsense.username`, `vatsense.password` and `vatsense.baseUrl` system properties
@@ -149,10 +161,10 @@ CompletableFuture<RateListResponse> rates = client.async().rates().list();
 Or create an asynchronous client from the beginning:
 
 ```java
-import com.vat_sense.api.client.VatSenseClientAsync;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClientAsync;
-import com.vat_sense.api.models.rates.RateListParams;
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.client.VatSenseClientAsync;
+import com.vatsense.client.okhttp.VatSenseOkHttpClientAsync;
+import com.vatsense.models.rates.RateListParams;
+import com.vatsense.models.rates.RateListResponse;
 import java.util.concurrent.CompletableFuture;
 
 // Configures using the `vatsense.username`, `vatsense.password` and `vatsense.baseUrl` system properties
@@ -171,10 +183,10 @@ The SDK defines methods that deserialize responses into instances of Java classe
 To access this data, prefix any HTTP method call on a client or service with `withRawResponse()`:
 
 ```java
-import com.vat_sense.api.core.http.Headers;
-import com.vat_sense.api.core.http.HttpResponseFor;
-import com.vat_sense.api.models.rates.RateListParams;
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.core.http.Headers;
+import com.vatsense.core.http.HttpResponseFor;
+import com.vatsense.models.rates.RateListParams;
+import com.vatsense.models.rates.RateListResponse;
 
 HttpResponseFor<RateListResponse> rates = client.rates().withRawResponse().list();
 
@@ -185,7 +197,7 @@ Headers headers = rates.headers();
 You can still deserialize the response into an instance of a Java class if needed:
 
 ```java
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.models.rates.RateListResponse;
 
 RateListResponse parsedRates = rates.parse();
 ```
@@ -194,26 +206,26 @@ RateListResponse parsedRates = rates.parse();
 
 The SDK throws custom unchecked exception types:
 
-- [`VatSenseServiceException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/VatSenseServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
+- [`VatSenseServiceException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/VatSenseServiceException.kt): Base class for HTTP errors. See this table for which exception subclass is thrown for each HTTP status code:
 
-  | Status | Exception                                                                                                                        |
-  | ------ | -------------------------------------------------------------------------------------------------------------------------------- |
-  | 400    | [`BadRequestException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/BadRequestException.kt)                     |
-  | 401    | [`UnauthorizedException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/UnauthorizedException.kt)                 |
-  | 403    | [`PermissionDeniedException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/PermissionDeniedException.kt)         |
-  | 404    | [`NotFoundException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/NotFoundException.kt)                         |
-  | 422    | [`UnprocessableEntityException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/UnprocessableEntityException.kt)   |
-  | 429    | [`RateLimitException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/RateLimitException.kt)                       |
-  | 5xx    | [`InternalServerException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/InternalServerException.kt)             |
-  | others | [`UnexpectedStatusCodeException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/UnexpectedStatusCodeException.kt) |
+  | Status | Exception                                                                                                                   |
+  | ------ | --------------------------------------------------------------------------------------------------------------------------- |
+  | 400    | [`BadRequestException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/BadRequestException.kt)                     |
+  | 401    | [`UnauthorizedException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/UnauthorizedException.kt)                 |
+  | 403    | [`PermissionDeniedException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/PermissionDeniedException.kt)         |
+  | 404    | [`NotFoundException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/NotFoundException.kt)                         |
+  | 422    | [`UnprocessableEntityException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/UnprocessableEntityException.kt)   |
+  | 429    | [`RateLimitException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/RateLimitException.kt)                       |
+  | 5xx    | [`InternalServerException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/InternalServerException.kt)             |
+  | others | [`UnexpectedStatusCodeException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/UnexpectedStatusCodeException.kt) |
 
-- [`VatSenseIoException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/VatSenseIoException.kt): I/O networking errors.
+- [`VatSenseIoException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/VatSenseIoException.kt): I/O networking errors.
 
-- [`VatSenseRetryableException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/VatSenseRetryableException.kt): Generic error indicating a failure that could be retried by the client.
+- [`VatSenseRetryableException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/VatSenseRetryableException.kt): Generic error indicating a failure that could be retried by the client.
 
-- [`VatSenseInvalidDataException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/VatSenseInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
+- [`VatSenseInvalidDataException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/VatSenseInvalidDataException.kt): Failure to interpret successfully parsed data. For example, when accessing a property that's supposed to be required, but the API unexpectedly omitted it from the response.
 
-- [`VatSenseException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/VatSenseException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
+- [`VatSenseException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/VatSenseException.kt): Base class for all exceptions. Most errors will result in one of the previously mentioned ones, but completely generic errors may be thrown using the base class.
 
 ## Logging
 
@@ -243,7 +255,7 @@ The SDK depends on [Jackson](https://github.com/FasterXML/jackson) for JSON seri
 
 The SDK throws an exception if it detects an incompatible Jackson version at runtime (e.g. if the default version was overridden in your Maven or Gradle config).
 
-If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClient.kt) or [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClientAsync.kt).
+If the SDK threw an exception, but you're _certain_ the version is compatible, then disable the version check using the `checkJacksonVersionCompatibility` on [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClient.kt) or [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClientAsync.kt).
 
 > [!CAUTION]
 > We make no guarantee that the SDK works correctly when the Jackson version check is disabled.
@@ -269,8 +281,8 @@ The API may also explicitly instruct the SDK to retry or not retry a request.
 To set a custom number of retries, configure the client using the `maxRetries` method:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
     .fromEnv()
@@ -285,7 +297,7 @@ Requests time out after 1 minute by default.
 To set a custom timeout, configure the method call using the `timeout` method:
 
 ```java
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.models.rates.RateListResponse;
 
 RateListResponse rates = client.rates().list(RequestOptions.builder().timeout(Duration.ofSeconds(30)).build());
 ```
@@ -293,8 +305,8 @@ RateListResponse rates = client.rates().list(RequestOptions.builder().timeout(Du
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 import java.time.Duration;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
@@ -308,8 +320,8 @@ VatSenseClient client = VatSenseOkHttpClient.builder()
 To route requests through a proxy, configure the client using the `proxy` method:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
@@ -328,8 +340,8 @@ VatSenseClient client = VatSenseOkHttpClient.builder()
 To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 import java.time.Duration;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
@@ -351,8 +363,8 @@ If both options are unset, OkHttp's default connection pool settings are used.
 To configure how HTTPS connections are secured, configure the client using the `sslSocketFactory`, `trustManager`, and `hostnameVerifier` methods:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
     .fromEnv()
@@ -370,10 +382,10 @@ The SDK consists of three artifacts:
 - `vat-sense-java-core`
   - Contains core SDK logic
   - Does not depend on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`VatSenseClient`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClient.kt), [`VatSenseClientAsync`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientAsync.kt), [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientImpl.kt), and [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientAsyncImpl.kt), all of which can work with any HTTP client
+  - Exposes [`VatSenseClient`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClient.kt), [`VatSenseClientAsync`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientAsync.kt), [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientImpl.kt), and [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientAsyncImpl.kt), all of which can work with any HTTP client
 - `vat-sense-java-client-okhttp`
   - Depends on [OkHttp](https://square.github.io/okhttp)
-  - Exposes [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClient.kt) and [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClientAsync.kt), which provide a way to construct [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientImpl.kt) and [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientAsyncImpl.kt), respectively, using OkHttp
+  - Exposes [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClient.kt) and [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClientAsync.kt), which provide a way to construct [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientImpl.kt) and [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientAsyncImpl.kt), respectively, using OkHttp
 - `vat-sense-java`
   - Depends on and exposes the APIs of both `vat-sense-java-core` and `vat-sense-java-client-okhttp`
   - Does not have its own logic
@@ -388,16 +400,16 @@ This structure allows replacing the SDK's default HTTP client without pulling in
 To use a customized `OkHttpClient`:
 
 1. Replace your [`vat-sense-java` dependency](#installation) with `vat-sense-java-core`
-2. Copy `vat-sense-java-client-okhttp`'s [`OkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/OkHttpClient.kt) class into your code and customize it
-3. Construct [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientImpl.kt) or [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientAsyncImpl.kt), similarly to [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClient.kt) or [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClientAsync.kt), using your customized client
+2. Copy `vat-sense-java-client-okhttp`'s [`OkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/OkHttpClient.kt) class into your code and customize it
+3. Construct [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientImpl.kt) or [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientAsyncImpl.kt), similarly to [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClient.kt) or [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClientAsync.kt), using your customized client
 
 ### Completely custom HTTP client
 
 To use a completely custom HTTP client:
 
 1. Replace your [`vat-sense-java` dependency](#installation) with `vat-sense-java-core`
-2. Write a class that implements the [`HttpClient`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/core/http/HttpClient.kt) interface
-3. Construct [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientImpl.kt) or [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/client/VatSenseClientAsyncImpl.kt), similarly to [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClient.kt) or [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vat_sense/api/client/okhttp/VatSenseOkHttpClientAsync.kt), using your new client class
+2. Write a class that implements the [`HttpClient`](vat-sense-java-core/src/main/kotlin/com/vatsense/core/http/HttpClient.kt) interface
+3. Construct [`VatSenseClientImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientImpl.kt) or [`VatSenseClientAsyncImpl`](vat-sense-java-core/src/main/kotlin/com/vatsense/client/VatSenseClientAsyncImpl.kt), similarly to [`VatSenseOkHttpClient`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClient.kt) or [`VatSenseOkHttpClientAsync`](vat-sense-java-client-okhttp/src/main/kotlin/com/vatsense/client/okhttp/VatSenseOkHttpClientAsync.kt), using your new client class
 
 ## Undocumented API functionality
 
@@ -408,8 +420,8 @@ The SDK is typed for convenient usage of the documented API. However, it also su
 To set undocumented parameters, call the `putAdditionalHeader`, `putAdditionalQueryParam`, or `putAdditionalBodyProperty` methods on any `Params` class:
 
 ```java
-import com.vat_sense.api.core.JsonValue;
-import com.vat_sense.api.models.rates.RateListParams;
+import com.vatsense.core.JsonValue;
+import com.vatsense.models.rates.RateListParams;
 
 RateListParams params = RateListParams.builder()
     .putAdditionalHeader("Secret-Header", "42")
@@ -420,18 +432,18 @@ RateListParams params = RateListParams.builder()
 
 These can be accessed on the built object later using the `_additionalHeaders()`, `_additionalQueryParams()`, and `_additionalBodyProperties()` methods.
 
-To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/core/Values.kt) object to its setter:
+To set a documented parameter or property to an undocumented or not yet supported _value_, pass a [`JsonValue`](vat-sense-java-core/src/main/kotlin/com/vatsense/core/Values.kt) object to its setter:
 
 ```java
-import com.vat_sense.api.models.rates.RateListParams;
+import com.vatsense.models.rates.RateListParams;
 
 RateListParams params = RateListParams.builder().build();
 ```
 
-The most straightforward way to create a [`JsonValue`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/core/Values.kt) is using its `from(...)` method:
+The most straightforward way to create a [`JsonValue`](vat-sense-java-core/src/main/kotlin/com/vatsense/core/Values.kt) is using its `from(...)` method:
 
 ```java
-import com.vat_sense.api.core.JsonValue;
+import com.vatsense.core.JsonValue;
 import java.util.List;
 import java.util.Map;
 
@@ -469,12 +481,12 @@ JsonValue complexValue = JsonValue.from(Map.of(
 
 Normally a `Builder` class's `build` method will throw [`IllegalStateException`](https://docs.oracle.com/javase/8/docs/api/java/lang/IllegalStateException.html) if any required parameter or property is unset.
 
-To forcibly omit a required parameter or property, pass [`JsonMissing`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/core/Values.kt):
+To forcibly omit a required parameter or property, pass [`JsonMissing`](vat-sense-java-core/src/main/kotlin/com/vatsense/core/Values.kt):
 
 ```java
-import com.vat_sense.api.core.JsonMissing;
-import com.vat_sense.api.models.rates.RateCalculatePriceParams;
-import com.vat_sense.api.models.rates.RateListParams;
+import com.vatsense.core.JsonMissing;
+import com.vatsense.models.rates.RateCalculatePriceParams;
+import com.vatsense.models.rates.RateListParams;
 
 RateListParams params = RateCalculatePriceParams.builder()
     .taxType(RateCalculatePriceParams.TaxType.EXCL)
@@ -487,7 +499,7 @@ RateListParams params = RateCalculatePriceParams.builder()
 To access undocumented response properties, call the `_additionalProperties()` method:
 
 ```java
-import com.vat_sense.api.core.JsonValue;
+import com.vatsense.core.JsonValue;
 import java.util.Map;
 
 Map<String, JsonValue> additionalProperties = client.rates().list(params)._additionalProperties();
@@ -517,7 +529,7 @@ String result = secretPropertyValue.accept(new JsonValue.Visitor<>() {
 To access a property's raw JSON value, which may be undocumented, call its `_` prefixed method:
 
 ```java
-import com.vat_sense.api.core.JsonField;
+import com.vatsense.core.JsonField;
 import java.util.Optional;
 
 JsonField<Object> field = client.rates().list(params)._field();
@@ -540,12 +552,12 @@ if (field.isMissing()) {
 
 In rare cases, the API may return a response that doesn't match the expected type. For example, the SDK may expect a property to contain a `String`, but the API could return something else.
 
-By default, the SDK will not throw an exception in this case. It will throw [`VatSenseInvalidDataException`](vat-sense-java-core/src/main/kotlin/com/vat_sense/api/errors/VatSenseInvalidDataException.kt) only if you directly access the property.
+By default, the SDK will not throw an exception in this case. It will throw [`VatSenseInvalidDataException`](vat-sense-java-core/src/main/kotlin/com/vatsense/errors/VatSenseInvalidDataException.kt) only if you directly access the property.
 
 If you would prefer to check that the response is completely well-typed upfront, then either call `validate()`:
 
 ```java
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.models.rates.RateListResponse;
 
 RateListResponse rates = client.rates().list(params).validate();
 ```
@@ -553,7 +565,7 @@ RateListResponse rates = client.rates().list(params).validate();
 Or configure the method call to validate the response using the `responseValidation` method:
 
 ```java
-import com.vat_sense.api.models.rates.RateListResponse;
+import com.vatsense.models.rates.RateListResponse;
 
 RateListResponse rates = client.rates().list(RequestOptions.builder().responseValidation(true).build());
 ```
@@ -561,8 +573,8 @@ RateListResponse rates = client.rates().list(RequestOptions.builder().responseVa
 Or configure the default for all method calls at the client level:
 
 ```java
-import com.vat_sense.api.client.VatSenseClient;
-import com.vat_sense.api.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
 
 VatSenseClient client = VatSenseOkHttpClient.builder()
     .fromEnv()
@@ -608,4 +620,4 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/vat-sense-java/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/VAT-Sense/vatsense-java/issues) with questions, bugs, or suggestions.

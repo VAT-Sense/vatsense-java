@@ -22,11 +22,11 @@
 -keep class * extends com.fasterxml.jackson.core.type.TypeReference { *; }
 
 # Jackson uses reflection to access our class serializers and deserializers.
--keep @com.fasterxml.jackson.databind.annotation.JsonSerialize class com.vat_sense.api.** { *; }
--keep @com.fasterxml.jackson.databind.annotation.JsonDeserialize class com.vat_sense.api.** { *; }
+-keep @com.fasterxml.jackson.databind.annotation.JsonSerialize class com.vatsense.** { *; }
+-keep @com.fasterxml.jackson.databind.annotation.JsonDeserialize class com.vatsense.** { *; }
 
 # Jackson uses reflection to serialize and deserialize our classes based on their constructors and annotated members.
--keepclassmembers class com.vat_sense.api.** {
+-keepclassmembers class com.vatsense.** {
     <init>(...);
     @com.fasterxml.jackson.annotation.* *;
 }
