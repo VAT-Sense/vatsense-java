@@ -1,0 +1,13 @@
+// File generated from our OpenAPI spec by Stainless.
+
+package com.vat_sense.api.models.rates
+
+import org.junit.jupiter.api.Test
+
+internal class RateListTypesParamsTest {
+
+    @Test
+    fun create() {
+        RateListTypesParams.builder().build()
+    }
+}
