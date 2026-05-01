@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0 (2026-05-01)
+
+Full Changelog: [v0.1.1...v0.2.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.1.1...v0.2.0)
+
+### Features
+
+* support setting headers via env ([d3fb3d1](https://github.com/VAT-Sense/vatsense-java/commit/d3fb3d1c08a48848e87533f5a4398fddc67c3684))
+
 ## 0.1.1 (2026-03-25)
 
 Full Changelog: [v0.1.0...v0.1.1](https://github.com/VAT-Sense/vatsense-java/compare/v0.1.0...v0.1.1)
