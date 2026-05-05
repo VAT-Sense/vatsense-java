@@ -5,12 +5,16 @@ package com.vatsense.errors
 import com.vatsense.core.JsonValue
 import com.vatsense.core.checkRequired
 import com.vatsense.core.http.Headers
+import com.vatsense.core.jsonMapper
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 
 class BadRequestException
 private constructor(private val headers: Headers, private val body: JsonValue, cause: Throwable?) :
-    VatSenseServiceException("400: $body", cause) {
+    VatSenseServiceException(
+        "400: ${if (body.isMissing()) "Unknown" else jsonMapper().writeValueAsString(body)}",
+        cause,
+    ) {
 
     override fun statusCode(): Int = 400
 
