@@ -335,6 +335,21 @@ VatSenseClient client = VatSenseOkHttpClient.builder()
     .build();
 ```
 
+If the proxy responds with `407 Proxy Authentication Required`, supply credentials by also configuring `proxyAuthenticator`:
+
+```java
+import com.vatsense.client.VatSenseClient;
+import com.vatsense.client.okhttp.VatSenseOkHttpClient;
+import com.vatsense.core.http.ProxyAuthenticator;
+
+VatSenseClient client = VatSenseOkHttpClient.builder()
+    .fromEnv()
+    .proxy(...)
+    // Or a custom implementation of `ProxyAuthenticator`.
+    .proxyAuthenticator(ProxyAuthenticator.basic("username", "password"))
+    .build();
+```
+
 ### Connection pooling
 
 To customize the underlying OkHttp connection pool, configure the client using the `maxIdleConnections` and `keepAliveDuration` methods:
