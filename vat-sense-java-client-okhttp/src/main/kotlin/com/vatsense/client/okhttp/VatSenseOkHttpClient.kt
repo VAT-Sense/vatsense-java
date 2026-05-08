@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper
 import com.vatsense.client.VatSenseClient
 import com.vatsense.client.VatSenseClientImpl
 import com.vatsense.core.ClientOptions
+import com.vatsense.core.LogLevel
 import com.vatsense.core.Sleeper
 import com.vatsense.core.Timeout
 import com.vatsense.core.http.Headers
@@ -276,6 +277,15 @@ class VatSenseOkHttpClient private constructor() {
          * Defaults to 2.
          */
         fun maxRetries(maxRetries: Int) = apply { clientOptions.maxRetries(maxRetries) }
+
+        /**
+         * The level at which to log request and response information.
+         *
+         * [fromEnv] will set the level from environment variables. See [LogLevel.fromEnv].
+         *
+         * Defaults to [LogLevel.fromEnv].
+         */
+        fun logLevel(logLevel: LogLevel) = apply { clientOptions.logLevel(logLevel) }
 
         /** Use HTTP Basic Auth with username `user` and your API key as the password. */
         fun username(username: String) = apply { clientOptions.username(username) }
