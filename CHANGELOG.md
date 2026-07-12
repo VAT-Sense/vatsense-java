@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.3.0 (2026-05-24)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **client:** more robust error parsing ([79730a4](https://github.com/VAT-Sense/vatsense-java/commit/79730a470a8da6c143f769a771fb6bdfb5be4468))
+
+
+### Performance Improvements
+
+* **client:** create one json mapper ([9bf8c86](https://github.com/VAT-Sense/vatsense-java/commit/9bf8c86de363201eb7938aae914fe9b17e809ec6))
+
+
+### Chores
+
+* **internal:** version bump ([b7048b8](https://github.com/VAT-Sense/vatsense-java/commit/b7048b8a9ac9a5e0fe6dc54ae8606af68deff83c))
+* remove duplicated dokka setup ([8db5256](https://github.com/VAT-Sense/vatsense-java/commit/8db525643513a54cee83925ae548b977d24a5480))
+
+
+### Documentation
+
+* clarify forwards compat behavior ([c502ef1](https://github.com/VAT-Sense/vatsense-java/commit/c502ef1cd4cf37207587fb28fac038f5b74db891))
+
 ## 0.2.0 (2026-05-01)
 
 Full Changelog: [v0.1.1...v0.2.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.1.1...v0.2.0)
