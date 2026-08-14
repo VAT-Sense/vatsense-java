@@ -3,7 +3,7 @@
 <!-- x-release-please-start-version -->
 
 [![Maven Central](https://img.shields.io/maven-central/v/com.vatsense/vat-sense-java)](https://central.sonatype.com/artifact/com.vatsense/vat-sense-java/0.3.0)
-[![javadoc](https://javadoc.io/badge2/com.vatsense/vat-sense-java/0.3.0/javadoc.svg)](https://javadoc.io/doc/com.vatsense/vat-sense-java/0.3.0)
+[![javadoc](https://javadoc.io/badge2/com.vatsense/vat-sense-java/javadoc.svg)](https://javadoc.io/doc/com.vatsense/vat-sense-java/0.3.0)
 
 <!-- x-release-please-end -->
 
