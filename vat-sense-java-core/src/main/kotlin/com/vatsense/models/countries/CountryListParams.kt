@@ -23,7 +23,13 @@ private constructor(
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
-    /** A 2-character ISO 3166-1 alpha-2 country code (e.g. "GB", "FR"). */
+    /**
+     * A 2-character ISO 3166-1 alpha-2 country code (e.g. "GB", "FR"). Overseas territories that
+     * carry their own ISO code but are modelled as provinces of a parent country (e.g. "NC" New
+     * Caledonia, "MF" Saint Martin, "GP", "MQ", "RE", "PF", "GF", "YT", "BL", "PM", "WF" under
+     * "FR") may be queried directly; the response identifies the territory and the rate is the one
+     * the parent-plus-province query returns.
+     */
     fun countryCode(): Optional<String> = Optional.ofNullable(countryCode)
 
     /** An IPv4 or IPv6 address. If provided, the country will be determined from the IP address. */
@@ -61,7 +67,13 @@ private constructor(
             additionalQueryParams = countryListParams.additionalQueryParams.toBuilder()
         }
 
-        /** A 2-character ISO 3166-1 alpha-2 country code (e.g. "GB", "FR"). */
+        /**
+         * A 2-character ISO 3166-1 alpha-2 country code (e.g. "GB", "FR"). Overseas territories
+         * that carry their own ISO code but are modelled as provinces of a parent country (e.g.
+         * "NC" New Caledonia, "MF" Saint Martin, "GP", "MQ", "RE", "PF", "GF", "YT", "BL", "PM",
+         * "WF" under "FR") may be queried directly; the response identifies the territory and the
+         * rate is the one the parent-plus-province query returns.
+         */
         fun countryCode(countryCode: String?) = apply { this.countryCode = countryCode }
 
         /** Alias for calling [Builder.countryCode] with `countryCode.orElse(null)`. */

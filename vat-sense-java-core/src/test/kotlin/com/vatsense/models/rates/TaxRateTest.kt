@@ -17,6 +17,7 @@ internal class TaxRateTest {
                 .description("")
                 .object_(TaxRate.Object.TAX_RATE)
                 .rate(20.0)
+                .taxName("vat")
                 .types(false)
                 .build()
 
@@ -24,6 +25,7 @@ internal class TaxRateTest {
         assertThat(taxRate.description()).contains("")
         assertThat(taxRate.object_()).contains(TaxRate.Object.TAX_RATE)
         assertThat(taxRate.rate()).contains(20.0)
+        assertThat(taxRate.taxName()).contains("vat")
         assertThat(taxRate.types()).contains(TaxRate.Types.ofBool(false))
     }
 
@@ -36,6 +38,7 @@ internal class TaxRateTest {
                 .description("")
                 .object_(TaxRate.Object.TAX_RATE)
                 .rate(20.0)
+                .taxName("vat")
                 .types(false)
                 .build()
 

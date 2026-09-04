@@ -35,6 +35,7 @@ private constructor(
     private val description: JsonField<String>,
     private val object_: JsonField<Object>,
     private val rate: JsonField<Double>,
+    private val taxName: JsonField<String>,
     private val types: JsonField<Types>,
     private val additionalProperties: MutableMap<String, JsonValue>,
 ) {
@@ -47,11 +48,12 @@ private constructor(
         description: JsonField<String> = JsonMissing.of(),
         @JsonProperty("object") @ExcludeMissing object_: JsonField<Object> = JsonMissing.of(),
         @JsonProperty("rate") @ExcludeMissing rate: JsonField<Double> = JsonMissing.of(),
+        @JsonProperty("tax_name") @ExcludeMissing taxName: JsonField<String> = JsonMissing.of(),
         @JsonProperty("types") @ExcludeMissing types: JsonField<Types> = JsonMissing.of(),
-    ) : this(class_, description, object_, rate, types, mutableMapOf())
+    ) : this(class_, description, object_, rate, taxName, types, mutableMapOf())
 
     /**
-     * The rate class (e.g. "standard", "reduced", "zero").
+     * The rate tier within its tax (e.g. "standard", "reduced", "higher", "zero", "exempt").
      *
      * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -79,6 +81,15 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun rate(): Optional<Double> = rate.getOptional("rate")
+
+    /**
+     * Short name of the tax this rate belongs to (e.g. "vat", "gst", "hst", "pst", "qst", "igic",
+     * "sst"). Open vocabulary, lower case. Null where not yet classified.
+     *
+     * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun taxName(): Optional<String> = taxName.getOptional("tax_name")
 
     /**
      * Comma-separated list of product types this rate applies to, or false if it applies generally.
@@ -117,6 +128,13 @@ private constructor(
     @JsonProperty("rate") @ExcludeMissing fun _rate(): JsonField<Double> = rate
 
     /**
+     * Returns the raw JSON value of [taxName].
+     *
+     * Unlike [taxName], this method doesn't throw if the JSON field has an unexpected type.
+     */
+    @JsonProperty("tax_name") @ExcludeMissing fun _taxName(): JsonField<String> = taxName
+
+    /**
      * Returns the raw JSON value of [types].
      *
      * Unlike [types], this method doesn't throw if the JSON field has an unexpected type.
@@ -148,6 +166,7 @@ private constructor(
         private var description: JsonField<String> = JsonMissing.of()
         private var object_: JsonField<Object> = JsonMissing.of()
         private var rate: JsonField<Double> = JsonMissing.of()
+        private var taxName: JsonField<String> = JsonMissing.of()
         private var types: JsonField<Types> = JsonMissing.of()
         private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
@@ -157,11 +176,14 @@ private constructor(
             description = taxRate.description
             object_ = taxRate.object_
             rate = taxRate.rate
+            taxName = taxRate.taxName
             types = taxRate.types
             additionalProperties = taxRate.additionalProperties.toMutableMap()
         }
 
-        /** The rate class (e.g. "standard", "reduced", "zero"). */
+        /**
+         * The rate tier within its tax (e.g. "standard", "reduced", "higher", "zero", "exempt").
+         */
         fun class_(class_: String) = class_(JsonField.of(class_))
 
         /**
@@ -204,6 +226,23 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun rate(rate: JsonField<Double>) = apply { this.rate = rate }
+
+        /**
+         * Short name of the tax this rate belongs to (e.g. "vat", "gst", "hst", "pst", "qst",
+         * "igic", "sst"). Open vocabulary, lower case. Null where not yet classified.
+         */
+        fun taxName(taxName: String?) = taxName(JsonField.ofNullable(taxName))
+
+        /** Alias for calling [Builder.taxName] with `taxName.orElse(null)`. */
+        fun taxName(taxName: Optional<String>) = taxName(taxName.getOrNull())
+
+        /**
+         * Sets [Builder.taxName] to an arbitrary JSON value.
+         *
+         * You should usually call [Builder.taxName] with a well-typed [String] value instead. This
+         * method is primarily for setting the field to an undocumented or not yet supported value.
+         */
+        fun taxName(taxName: JsonField<String>) = apply { this.taxName = taxName }
 
         /**
          * Comma-separated list of product types this rate applies to, or false if it applies
@@ -250,7 +289,15 @@ private constructor(
          * Further updates to this [Builder] will not mutate the returned instance.
          */
         fun build(): TaxRate =
-            TaxRate(class_, description, object_, rate, types, additionalProperties.toMutableMap())
+            TaxRate(
+                class_,
+                description,
+                object_,
+                rate,
+                taxName,
+                types,
+                additionalProperties.toMutableMap(),
+            )
     }
 
     private var validated: Boolean = false
@@ -272,6 +319,7 @@ private constructor(
         description()
         object_().ifPresent { it.validate() }
         rate()
+        taxName()
         types().ifPresent { it.validate() }
         validated = true
     }
@@ -295,6 +343,7 @@ private constructor(
             (if (description.asKnown().isPresent) 1 else 0) +
             (object_.asKnown().getOrNull()?.validity() ?: 0) +
             (if (rate.asKnown().isPresent) 1 else 0) +
+            (if (taxName.asKnown().isPresent) 1 else 0) +
             (types.asKnown().getOrNull()?.validity() ?: 0)
 
     class Object @JsonCreator private constructor(private val value: JsonField<String>) : Enum {
@@ -645,16 +694,17 @@ private constructor(
             description == other.description &&
             object_ == other.object_ &&
             rate == other.rate &&
+            taxName == other.taxName &&
             types == other.types &&
             additionalProperties == other.additionalProperties
     }
 
     private val hashCode: Int by lazy {
-        Objects.hash(class_, description, object_, rate, types, additionalProperties)
+        Objects.hash(class_, description, object_, rate, taxName, types, additionalProperties)
     }
 
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "TaxRate{class_=$class_, description=$description, object_=$object_, rate=$rate, types=$types, additionalProperties=$additionalProperties}"
+        "TaxRate{class_=$class_, description=$description, object_=$object_, rate=$rate, taxName=$taxName, types=$types, additionalProperties=$additionalProperties}"
 }
