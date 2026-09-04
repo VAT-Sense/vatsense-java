@@ -8,7 +8,7 @@ repositories {
 
 allprojects {
     group = "com.vatsense"
-    version = "0.3.0" // x-release-please-version
+    version = "0.4.0" // x-release-please-version
 }
 
 subprojects {
