@@ -2,8 +2,8 @@
 
 <!-- x-release-please-start-version -->
 
-[![Maven Central](https://img.shields.io/maven-central/v/com.vatsense/vat-sense-java)](https://central.sonatype.com/artifact/com.vatsense/vat-sense-java/0.3.0)
-[![javadoc](https://javadoc.io/badge2/com.vatsense/vat-sense-java/javadoc.svg)](https://javadoc.io/doc/com.vatsense/vat-sense-java/0.3.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.vatsense/vat-sense-java)](https://central.sonatype.com/artifact/com.vatsense/vat-sense-java/0.4.0)
+[![javadoc](https://javadoc.io/badge2/com.vatsense/vat-sense-java/javadoc.svg)](https://javadoc.io/doc/com.vatsense/vat-sense-java/0.4.0)
 
 <!-- x-release-please-end -->
 
@@ -16,7 +16,7 @@ The official Java library for the [VAT Sense](https://vatsense.com) REST API. Va
 ### Gradle
 
 ```kotlin
-implementation("com.vatsense:vat-sense-java:0.3.0")
+implementation("com.vatsense:vat-sense-java:0.4.0")
 ```
 
 ### Maven
@@ -25,7 +25,7 @@ implementation("com.vatsense:vat-sense-java:0.3.0")
 <dependency>
     <groupId>com.vatsense</groupId>
     <artifactId>vat-sense-java</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 

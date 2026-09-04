@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.4.0 (2026-09-04)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **client:** improve logging ([0730da0](https://github.com/VAT-Sense/vatsense-java/commit/0730da06ede8f8fdb7893fa73b538ffa1aa5de2c))
+* **client:** support proxy authentication ([2ea0492](https://github.com/VAT-Sense/vatsense-java/commit/2ea04923fb6e4b4d1aae38332f8e6e7f0455e113))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([ca8fa86](https://github.com/VAT-Sense/vatsense-java/commit/ca8fa8643bf5a803c00f4eecf86f2da7463c497c))
+
+
+### Bug Fixes
+
+* **docs:** link the javadoc badge so the version stays current after release ([374f122](https://github.com/VAT-Sense/vatsense-java/commit/374f122a910f7317a8abb1916e46e6818994e2ba))
+
+
+### Chores
+
+* **internal:** codegen related update ([edb9964](https://github.com/VAT-Sense/vatsense-java/commit/edb996456dcb88e00d587033d6b26022256d4498))
+* **internal:** codegen related update ([2191dce](https://github.com/VAT-Sense/vatsense-java/commit/2191dcec50f0670d2752e6b5000b742b082e47c8))
+* **internal:** version bump ([bd607e6](https://github.com/VAT-Sense/vatsense-java/commit/bd607e66e1225bae109abf1fb4c8adedd9e7ee33))
+* **internal:** version bump ([f499683](https://github.com/VAT-Sense/vatsense-java/commit/f499683f372fa585054c2f7c57eaab771c3f8fb7))
+* redact api-key headers in debug logs ([7c37e86](https://github.com/VAT-Sense/vatsense-java/commit/7c37e869b8f605161e6d4e74e2825f7d92474d0b))
+
 ## 0.3.0 (2026-05-24)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.2.0...v0.3.0)
