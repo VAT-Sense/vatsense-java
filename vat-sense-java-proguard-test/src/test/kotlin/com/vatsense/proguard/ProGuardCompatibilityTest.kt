@@ -77,6 +77,7 @@ internal class ProGuardCompatibilityTest {
                                 .description("")
                                 .object_(TaxRate.Object.TAX_RATE)
                                 .rate(20.0)
+                                .taxName("vat")
                                 .types(false)
                                 .build()
                         )
