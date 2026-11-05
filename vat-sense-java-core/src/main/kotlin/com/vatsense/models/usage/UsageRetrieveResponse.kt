@@ -362,7 +362,7 @@ private constructor(
             fun remaining(): Optional<Long> = remaining.getOptional("remaining")
 
             /**
-             * Total requests allowed on your plan.
+             * Requests available in the current billing period.
              *
              * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g.
              *   if the server responded with an unexpected value).
@@ -370,7 +370,7 @@ private constructor(
             fun total(): Optional<Long> = total.getOptional("total")
 
             /**
-             * Requests used in the last 30 days.
+             * Requests used so far in the current billing period.
              *
              * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g.
              *   if the server responded with an unexpected value).
@@ -445,7 +445,7 @@ private constructor(
                  */
                 fun remaining(remaining: JsonField<Long>) = apply { this.remaining = remaining }
 
-                /** Total requests allowed on your plan. */
+                /** Requests available in the current billing period. */
                 fun total(total: Long) = total(JsonField.of(total))
 
                 /**
@@ -457,7 +457,7 @@ private constructor(
                  */
                 fun total(total: JsonField<Long>) = apply { this.total = total }
 
-                /** Requests used in the last 30 days. */
+                /** Requests used so far in the current billing period. */
                 fun used(used: Long) = used(JsonField.of(used))
 
                 /**

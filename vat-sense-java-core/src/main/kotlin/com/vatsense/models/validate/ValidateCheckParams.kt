@@ -27,6 +27,11 @@ private constructor(
     private val eoriNumber: String?,
     private val requesterVatNumber: String?,
     private val vatNumber: String?,
+    private val matchAddress: String?,
+    private val matchCity: String?,
+    private val matchCompanyName: String?,
+    private val matchPostcode: String?,
+    private val matchStreet: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -53,6 +58,25 @@ private constructor(
      */
     fun vatNumber(): Optional<String> = Optional.ofNullable(vatNumber)
 
+    /** The whole address you hold, as one line, matched against the registered address. */
+    fun matchAddress(): Optional<String> = Optional.ofNullable(matchAddress)
+
+    /** The town or city you hold, looked for in the registered address. */
+    fun matchCity(): Optional<String> = Optional.ofNullable(matchCity)
+
+    /**
+     * The company name you hold, matched against the registered name. Legal forms such as Ltd or
+     * GmbH, accents, punctuation and word order are ignored. Sending any `match_` parameter adds
+     * `match` to the response; matching costs nothing extra.
+     */
+    fun matchCompanyName(): Optional<String> = Optional.ofNullable(matchCompanyName)
+
+    /** The postcode you hold, looked for in the registered address. Spaces are ignored. */
+    fun matchPostcode(): Optional<String> = Optional.ofNullable(matchPostcode)
+
+    /** The street line you hold, looked for in the registered address. */
+    fun matchStreet(): Optional<String> = Optional.ofNullable(matchStreet)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -75,6 +99,11 @@ private constructor(
         private var eoriNumber: String? = null
         private var requesterVatNumber: String? = null
         private var vatNumber: String? = null
+        private var matchAddress: String? = null
+        private var matchCity: String? = null
+        private var matchCompanyName: String? = null
+        private var matchPostcode: String? = null
+        private var matchStreet: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -83,6 +112,11 @@ private constructor(
             eoriNumber = validateCheckParams.eoriNumber
             requesterVatNumber = validateCheckParams.requesterVatNumber
             vatNumber = validateCheckParams.vatNumber
+            matchAddress = validateCheckParams.matchAddress
+            matchCity = validateCheckParams.matchCity
+            matchCompanyName = validateCheckParams.matchCompanyName
+            matchPostcode = validateCheckParams.matchPostcode
+            matchStreet = validateCheckParams.matchStreet
             additionalHeaders = validateCheckParams.additionalHeaders.toBuilder()
             additionalQueryParams = validateCheckParams.additionalQueryParams.toBuilder()
         }
@@ -122,6 +156,44 @@ private constructor(
 
         /** Alias for calling [Builder.vatNumber] with `vatNumber.orElse(null)`. */
         fun vatNumber(vatNumber: Optional<String>) = vatNumber(vatNumber.getOrNull())
+
+        /** The whole address you hold, as one line, matched against the registered address. */
+        fun matchAddress(matchAddress: String?) = apply { this.matchAddress = matchAddress }
+
+        /** Alias for calling [Builder.matchAddress] with `matchAddress.orElse(null)`. */
+        fun matchAddress(matchAddress: Optional<String>) = matchAddress(matchAddress.getOrNull())
+
+        /** The town or city you hold, looked for in the registered address. */
+        fun matchCity(matchCity: String?) = apply { this.matchCity = matchCity }
+
+        /** Alias for calling [Builder.matchCity] with `matchCity.orElse(null)`. */
+        fun matchCity(matchCity: Optional<String>) = matchCity(matchCity.getOrNull())
+
+        /**
+         * The company name you hold, matched against the registered name. Legal forms such as Ltd
+         * or GmbH, accents, punctuation and word order are ignored. Sending any `match_` parameter
+         * adds `match` to the response; matching costs nothing extra.
+         */
+        fun matchCompanyName(matchCompanyName: String?) = apply {
+            this.matchCompanyName = matchCompanyName
+        }
+
+        /** Alias for calling [Builder.matchCompanyName] with `matchCompanyName.orElse(null)`. */
+        fun matchCompanyName(matchCompanyName: Optional<String>) =
+            matchCompanyName(matchCompanyName.getOrNull())
+
+        /** The postcode you hold, looked for in the registered address. Spaces are ignored. */
+        fun matchPostcode(matchPostcode: String?) = apply { this.matchPostcode = matchPostcode }
+
+        /** Alias for calling [Builder.matchPostcode] with `matchPostcode.orElse(null)`. */
+        fun matchPostcode(matchPostcode: Optional<String>) =
+            matchPostcode(matchPostcode.getOrNull())
+
+        /** The street line you hold, looked for in the registered address. */
+        fun matchStreet(matchStreet: String?) = apply { this.matchStreet = matchStreet }
+
+        /** Alias for calling [Builder.matchStreet] with `matchStreet.orElse(null)`. */
+        fun matchStreet(matchStreet: Optional<String>) = matchStreet(matchStreet.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -231,6 +303,11 @@ private constructor(
                 eoriNumber,
                 requesterVatNumber,
                 vatNumber,
+                matchAddress,
+                matchCity,
+                matchCompanyName,
+                matchPostcode,
+                matchStreet,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -244,6 +321,11 @@ private constructor(
                 eoriNumber?.let { put("eori_number", it) }
                 requesterVatNumber?.let { put("requester_vat_number", it) }
                 vatNumber?.let { put("vat_number", it) }
+                matchAddress?.let { put("match_address", it) }
+                matchCity?.let { put("match_city", it) }
+                matchCompanyName?.let { put("match_company_name", it) }
+                matchPostcode?.let { put("match_postcode", it) }
+                matchStreet?.let { put("match_street", it) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -257,6 +339,11 @@ private constructor(
             eoriNumber == other.eoriNumber &&
             requesterVatNumber == other.requesterVatNumber &&
             vatNumber == other.vatNumber &&
+            matchAddress == other.matchAddress &&
+            matchCity == other.matchCity &&
+            matchCompanyName == other.matchCompanyName &&
+            matchPostcode == other.matchPostcode &&
+            matchStreet == other.matchStreet &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -266,10 +353,15 @@ private constructor(
             eoriNumber,
             requesterVatNumber,
             vatNumber,
+            matchAddress,
+            matchCity,
+            matchCompanyName,
+            matchPostcode,
+            matchStreet,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "ValidateCheckParams{eoriNumber=$eoriNumber, requesterVatNumber=$requesterVatNumber, vatNumber=$vatNumber, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ValidateCheckParams{eoriNumber=$eoriNumber, requesterVatNumber=$requesterVatNumber, vatNumber=$vatNumber, matchAddress=$matchAddress, matchCity=$matchCity, matchCompanyName=$matchCompanyName, matchPostcode=$matchPostcode, matchStreet=$matchStreet, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

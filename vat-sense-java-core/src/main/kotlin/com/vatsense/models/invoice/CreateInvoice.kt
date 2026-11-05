@@ -36,6 +36,7 @@ private constructor(
     private val isCopy: JsonField<Boolean>,
     private val isReverseCharge: JsonField<Boolean>,
     private val notes: JsonField<String>,
+    private val originalInvoiceId: JsonField<String>,
     private val padInvoiceNumber: JsonField<Long>,
     private val serial: JsonField<String>,
     private val taxType: JsonField<TaxType>,
@@ -72,6 +73,9 @@ private constructor(
         @ExcludeMissing
         isReverseCharge: JsonField<Boolean> = JsonMissing.of(),
         @JsonProperty("notes") @ExcludeMissing notes: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("original_invoice_id")
+        @ExcludeMissing
+        originalInvoiceId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("pad_invoice_number")
         @ExcludeMissing
         padInvoiceNumber: JsonField<Long> = JsonMissing.of(),
@@ -92,6 +96,7 @@ private constructor(
         isCopy,
         isReverseCharge,
         notes,
+        originalInvoiceId,
         padInvoiceNumber,
         serial,
         taxType,
@@ -187,6 +192,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun notes(): Optional<String> = notes.getOptional("notes")
+
+    /**
+     * For a credit note: the ID of your own sale invoice it credits. Only a `refund` can name one.
+     *
+     * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun originalInvoiceId(): Optional<String> = originalInvoiceId.getOptional("original_invoice_id")
 
     /**
      * Pad the auto-generated invoice number with leading zeros to this length.
@@ -326,6 +339,16 @@ private constructor(
     @JsonProperty("notes") @ExcludeMissing fun _notes(): JsonField<String> = notes
 
     /**
+     * Returns the raw JSON value of [originalInvoiceId].
+     *
+     * Unlike [originalInvoiceId], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("original_invoice_id")
+    @ExcludeMissing
+    fun _originalInvoiceId(): JsonField<String> = originalInvoiceId
+
+    /**
      * Returns the raw JSON value of [padInvoiceNumber].
      *
      * Unlike [padInvoiceNumber], this method doesn't throw if the JSON field has an unexpected
@@ -407,6 +430,7 @@ private constructor(
         private var isCopy: JsonField<Boolean> = JsonMissing.of()
         private var isReverseCharge: JsonField<Boolean> = JsonMissing.of()
         private var notes: JsonField<String> = JsonMissing.of()
+        private var originalInvoiceId: JsonField<String> = JsonMissing.of()
         private var padInvoiceNumber: JsonField<Long> = JsonMissing.of()
         private var serial: JsonField<String> = JsonMissing.of()
         private var taxType: JsonField<TaxType> = JsonMissing.of()
@@ -428,6 +452,7 @@ private constructor(
             isCopy = createInvoice.isCopy
             isReverseCharge = createInvoice.isReverseCharge
             notes = createInvoice.notes
+            originalInvoiceId = createInvoice.originalInvoiceId
             padInvoiceNumber = createInvoice.padInvoiceNumber
             serial = createInvoice.serial
             taxType = createInvoice.taxType
@@ -592,6 +617,22 @@ private constructor(
          */
         fun notes(notes: JsonField<String>) = apply { this.notes = notes }
 
+        /**
+         * For a credit note: the ID of your own sale invoice it credits. Only a `refund` can name
+         * one.
+         */
+        fun originalInvoiceId(originalInvoiceId: String?) =
+            originalInvoiceId(JsonField.ofNullable(originalInvoiceId))
+
+        /** Alias for calling [Builder.originalInvoiceId] with `originalInvoiceId.orElse(null)`. */
+        fun originalInvoiceId(originalInvoiceId: Optional<String>) =
+            originalInvoiceId(originalInvoiceId.getOrNull())
+
+        /** Sets [Builder.originalInvoiceId] to an arbitrary JSON value. */
+        fun originalInvoiceId(originalInvoiceId: JsonField<String>) = apply {
+            this.originalInvoiceId = originalInvoiceId
+        }
+
         /** Pad the auto-generated invoice number with leading zeros to this length. */
         fun padInvoiceNumber(padInvoiceNumber: Long) =
             padInvoiceNumber(JsonField.of(padInvoiceNumber))
@@ -704,6 +745,7 @@ private constructor(
                 isCopy,
                 isReverseCharge,
                 notes,
+                originalInvoiceId,
                 padInvoiceNumber,
                 serial,
                 taxType,
@@ -740,6 +782,7 @@ private constructor(
         isCopy()
         isReverseCharge()
         notes()
+        originalInvoiceId()
         padInvoiceNumber()
         serial()
         taxType().ifPresent { it.validate() }
@@ -775,6 +818,7 @@ private constructor(
             (if (isCopy.asKnown().isPresent) 1 else 0) +
             (if (isReverseCharge.asKnown().isPresent) 1 else 0) +
             (if (notes.asKnown().isPresent) 1 else 0) +
+            (if (originalInvoiceId.asKnown().isPresent) 1 else 0) +
             (if (padInvoiceNumber.asKnown().isPresent) 1 else 0) +
             (if (serial.asKnown().isPresent) 1 else 0) +
             (taxType.asKnown().getOrNull()?.validity() ?: 0) +
@@ -1073,6 +1117,7 @@ private constructor(
             isCopy == other.isCopy &&
             isReverseCharge == other.isReverseCharge &&
             notes == other.notes &&
+            originalInvoiceId == other.originalInvoiceId &&
             padInvoiceNumber == other.padInvoiceNumber &&
             serial == other.serial &&
             taxType == other.taxType &&
@@ -1095,6 +1140,7 @@ private constructor(
             isCopy,
             isReverseCharge,
             notes,
+            originalInvoiceId,
             padInvoiceNumber,
             serial,
             taxType,
@@ -1107,5 +1153,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "CreateInvoice{business=$business, currencyCode=$currencyCode, date=$date, items=$items, taxPoint=$taxPoint, conversion=$conversion, customer=$customer, hasVat=$hasVat, invoiceNumber=$invoiceNumber, isCopy=$isCopy, isReverseCharge=$isReverseCharge, notes=$notes, padInvoiceNumber=$padInvoiceNumber, serial=$serial, taxType=$taxType, type=$type, zeroRated=$zeroRated, additionalProperties=$additionalProperties}"
+        "CreateInvoice{business=$business, currencyCode=$currencyCode, date=$date, items=$items, taxPoint=$taxPoint, conversion=$conversion, customer=$customer, hasVat=$hasVat, invoiceNumber=$invoiceNumber, isCopy=$isCopy, isReverseCharge=$isReverseCharge, notes=$notes, originalInvoiceId=$originalInvoiceId, padInvoiceNumber=$padInvoiceNumber, serial=$serial, taxType=$taxType, type=$type, zeroRated=$zeroRated, additionalProperties=$additionalProperties}"
 }

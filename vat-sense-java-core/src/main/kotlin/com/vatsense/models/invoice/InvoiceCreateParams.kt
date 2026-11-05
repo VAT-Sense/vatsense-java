@@ -8,21 +8,34 @@ import com.vatsense.core.checkRequired
 import com.vatsense.core.http.Headers
 import com.vatsense.core.http.QueryParams
 import java.util.Objects
+import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 
 /**
  * Create a new VAT-compliant invoice. VAT Sense will automatically calculate the totals based on
  * the items provided.
  *
  * Not available with sandbox API keys.
+ *
+ * Set [Builder.idempotencyKey] to retry a create safely: a repeat with the same key and the same
+ * body, byte for byte, creates nothing and returns the invoice the first request made.
  */
 class InvoiceCreateParams
 private constructor(
     private val createInvoice: CreateInvoice,
+    private val idempotencyKey: String?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
 
     fun createInvoice(): CreateInvoice = createInvoice
+
+    /**
+     * Sent as the `Idempotency-Key` header to retry a create safely: a repeat with the same key and
+     * the same body, byte for byte, creates nothing and returns the invoice the first request made.
+     * The same key with a different body gets `422` "Idempotency Key Reused".
+     */
+    fun idempotencyKey(): Optional<String> = Optional.ofNullable(idempotencyKey)
 
     fun _additionalBodyProperties(): Map<String, JsonValue> = createInvoice._additionalProperties()
 
@@ -51,12 +64,14 @@ private constructor(
     class Builder internal constructor() {
 
         private var createInvoice: CreateInvoice? = null
+        private var idempotencyKey: String? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
         @JvmSynthetic
         internal fun from(invoiceCreateParams: InvoiceCreateParams) = apply {
             createInvoice = invoiceCreateParams.createInvoice
+            idempotencyKey = invoiceCreateParams.idempotencyKey
             additionalHeaders = invoiceCreateParams.additionalHeaders.toBuilder()
             additionalQueryParams = invoiceCreateParams.additionalQueryParams.toBuilder()
         }
@@ -64,6 +79,16 @@ private constructor(
         fun createInvoice(createInvoice: CreateInvoice) = apply {
             this.createInvoice = createInvoice
         }
+
+        /**
+         * Sent as the `Idempotency-Key` header to retry a create safely. 1 to 255 characters,
+         * unique to this invoice (such as your order number or a UUID).
+         */
+        fun idempotencyKey(idempotencyKey: String?) = apply { this.idempotencyKey = idempotencyKey }
+
+        /** Alias for calling [Builder.idempotencyKey] with `idempotencyKey.orElse(null)`. */
+        fun idempotencyKey(idempotencyKey: Optional<String>) =
+            idempotencyKey(idempotencyKey.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -178,6 +203,7 @@ private constructor(
         fun build(): InvoiceCreateParams =
             InvoiceCreateParams(
                 checkRequired("createInvoice", createInvoice),
+                idempotencyKey,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -185,7 +211,13 @@ private constructor(
 
     fun _body(): CreateInvoice = createInvoice
 
-    override fun _headers(): Headers = additionalHeaders
+    override fun _headers(): Headers =
+        Headers.builder()
+            .apply {
+                idempotencyKey?.let { put("Idempotency-Key", it) }
+                putAll(additionalHeaders)
+            }
+            .build()
 
     override fun _queryParams(): QueryParams = additionalQueryParams
 
@@ -196,13 +228,14 @@ private constructor(
 
         return other is InvoiceCreateParams &&
             createInvoice == other.createInvoice &&
+            idempotencyKey == other.idempotencyKey &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(createInvoice, additionalHeaders, additionalQueryParams)
+        Objects.hash(createInvoice, idempotencyKey, additionalHeaders, additionalQueryParams)
 
     override fun toString() =
-        "InvoiceCreateParams{createInvoice=$createInvoice, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "InvoiceCreateParams{createInvoice=$createInvoice, idempotencyKey=$idempotencyKey, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
