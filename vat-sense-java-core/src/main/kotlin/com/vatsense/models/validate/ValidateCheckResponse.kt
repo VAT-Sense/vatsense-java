@@ -220,6 +220,7 @@ private constructor(
         private val company: JsonField<Company>,
         private val consultationNumber: JsonField<String>,
         private val valid: JsonField<Boolean>,
+        private val match: JsonField<Match>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -230,7 +231,8 @@ private constructor(
             @ExcludeMissing
             consultationNumber: JsonField<String> = JsonMissing.of(),
             @JsonProperty("valid") @ExcludeMissing valid: JsonField<Boolean> = JsonMissing.of(),
-        ) : this(company, consultationNumber, valid, mutableMapOf())
+            @JsonProperty("match") @ExcludeMissing match: JsonField<Match> = JsonMissing.of(),
+        ) : this(company, consultationNumber, valid, match, mutableMapOf())
 
         /**
          * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -254,6 +256,21 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun valid(): Optional<Boolean> = valid.getOptional("valid")
+
+        /**
+         * Only when a `match_` parameter was sent.
+         *
+         * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun match(): Optional<Match> = match.getOptional("match")
+
+        /**
+         * Returns the raw JSON value of [match].
+         *
+         * Unlike [match], this method doesn't throw if the JSON field has an unexpected type.
+         */
+        @JsonProperty("match") @ExcludeMissing fun _match(): JsonField<Match> = match
 
         /**
          * Returns the raw JSON value of [company].
@@ -303,6 +320,7 @@ private constructor(
             private var company: JsonField<Company> = JsonMissing.of()
             private var consultationNumber: JsonField<String> = JsonMissing.of()
             private var valid: JsonField<Boolean> = JsonMissing.of()
+            private var match: JsonField<Match> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
 
             @JvmSynthetic
@@ -310,6 +328,7 @@ private constructor(
                 company = data.company
                 consultationNumber = data.consultationNumber
                 valid = data.valid
+                match = data.match
                 additionalProperties = data.additionalProperties.toMutableMap()
             }
 
@@ -368,6 +387,12 @@ private constructor(
              */
             fun valid(valid: JsonField<Boolean>) = apply { this.valid = valid }
 
+            /** Only when a `match_` parameter was sent. */
+            fun match(match: Match) = match(JsonField.of(match))
+
+            /** Sets [Builder.match] to an arbitrary JSON value. */
+            fun match(match: JsonField<Match>) = apply { this.match = match }
+
             fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
                 this.additionalProperties.clear()
                 putAllAdditionalProperties(additionalProperties)
@@ -393,7 +418,7 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): Data =
-                Data(company, consultationNumber, valid, additionalProperties.toMutableMap())
+                Data(company, consultationNumber, valid, match, additionalProperties.toMutableMap())
         }
 
         private var validated: Boolean = false
@@ -415,6 +440,7 @@ private constructor(
             company().ifPresent { it.validate() }
             consultationNumber()
             valid()
+            match().ifPresent { it.validate() }
             validated = true
         }
 
@@ -436,7 +462,446 @@ private constructor(
         internal fun validity(): Int =
             (company.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (consultationNumber.asKnown().isPresent) 1 else 0) +
-                (if (valid.asKnown().isPresent) 1 else 0)
+                (if (valid.asKnown().isPresent) 1 else 0) +
+                (match.asKnown().getOrNull()?.validity() ?: 0)
+
+        /** Only when a `match_` parameter was sent. */
+        class Match
+        @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+        private constructor(
+            private val fields: JsonField<Map<String, Field>>,
+            private val result: JsonField<String>,
+            private val score: JsonField<Long>,
+            private val additionalProperties: MutableMap<String, JsonValue>,
+        ) {
+
+            @JsonCreator
+            private constructor(
+                @JsonProperty("fields")
+                @ExcludeMissing
+                fields: JsonField<Map<String, Field>> = JsonMissing.of(),
+                @JsonProperty("result")
+                @ExcludeMissing
+                result: JsonField<String> = JsonMissing.of(),
+                @JsonProperty("score") @ExcludeMissing score: JsonField<Long> = JsonMissing.of(),
+            ) : this(fields, result, score, mutableMapOf())
+
+            /**
+             * One entry for each detail sent (company_name, address, street, postcode, city).
+             *
+             * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun fields(): Optional<Map<String, Field>> = fields.getOptional("fields")
+
+            /**
+             * likely (a score of 80 or more, and the name, if sent, is not a no_match), possible
+             * (50 to 79), unlikely (under 50), or not_applicable when nothing could be compared.
+             *
+             * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun result(): Optional<String> = result.getOptional("result")
+
+            /**
+             * The average of the details sent, with the name counting twice. Empty when
+             * not_applicable.
+             *
+             * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g.
+             *   if the server responded with an unexpected value).
+             */
+            fun score(): Optional<Long> = score.getOptional("score")
+
+            /**
+             * Returns the raw JSON value of [fields].
+             *
+             * Unlike [fields], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("fields")
+            @ExcludeMissing
+            fun _fields(): JsonField<Map<String, Field>> = fields
+
+            /**
+             * Returns the raw JSON value of [result].
+             *
+             * Unlike [result], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("result") @ExcludeMissing fun _result(): JsonField<String> = result
+
+            /**
+             * Returns the raw JSON value of [score].
+             *
+             * Unlike [score], this method doesn't throw if the JSON field has an unexpected type.
+             */
+            @JsonProperty("score") @ExcludeMissing fun _score(): JsonField<Long> = score
+
+            @JsonAnySetter
+            private fun putAdditionalProperty(key: String, value: JsonValue) {
+                additionalProperties.put(key, value)
+            }
+
+            @JsonAnyGetter
+            @ExcludeMissing
+            fun _additionalProperties(): Map<String, JsonValue> =
+                Collections.unmodifiableMap(additionalProperties)
+
+            fun toBuilder() = Builder().from(this)
+
+            companion object {
+
+                /** Returns a mutable builder for constructing an instance of [Match]. */
+                @JvmStatic fun builder() = Builder()
+            }
+
+            /** A builder for [Match]. */
+            class Builder internal constructor() {
+
+                private var fields: JsonField<Map<String, Field>> = JsonMissing.of()
+                private var result: JsonField<String> = JsonMissing.of()
+                private var score: JsonField<Long> = JsonMissing.of()
+                private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                @JvmSynthetic
+                internal fun from(v: Match) = apply {
+                    fields = v.fields
+                    result = v.result
+                    score = v.score
+                    additionalProperties = v.additionalProperties.toMutableMap()
+                }
+
+                /**
+                 * One entry for each detail sent (company_name, address, street, postcode, city).
+                 */
+                fun fields(fields: Map<String, Field>) = fields(JsonField.of(fields))
+
+                /** Sets [Builder.fields] to an arbitrary JSON value. */
+                fun fields(fields: JsonField<Map<String, Field>>) = apply { this.fields = fields }
+
+                /**
+                 * likely (a score of 80 or more, and the name, if sent, is not a no_match),
+                 * possible (50 to 79), unlikely (under 50), or not_applicable when nothing could be
+                 * compared.
+                 */
+                fun result(result: String) = result(JsonField.of(result))
+
+                /** Sets [Builder.result] to an arbitrary JSON value. */
+                fun result(result: JsonField<String>) = apply { this.result = result }
+
+                /**
+                 * The average of the details sent, with the name counting twice. Empty when
+                 * not_applicable.
+                 */
+                fun score(score: Long?) = score(JsonField.ofNullable(score))
+
+                /** Alias for [Builder.score]. */
+                fun score(score: Long) = score(score as Long?)
+
+                /** Alias for calling [Builder.score] with `score.orElse(null)`. */
+                fun score(score: Optional<Long>) = score(score.getOrNull())
+
+                /** Sets [Builder.score] to an arbitrary JSON value. */
+                fun score(score: JsonField<Long>) = apply { this.score = score }
+
+                fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                    this.additionalProperties.clear()
+                    putAllAdditionalProperties(additionalProperties)
+                }
+
+                fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                    additionalProperties.put(key, value)
+                }
+
+                fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                    apply {
+                        this.additionalProperties.putAll(additionalProperties)
+                    }
+
+                fun removeAdditionalProperty(key: String) = apply {
+                    additionalProperties.remove(key)
+                }
+
+                fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                    keys.forEach(::removeAdditionalProperty)
+                }
+
+                /** Returns an immutable instance of [Match]. */
+                fun build(): Match =
+                    Match(fields, result, score, additionalProperties.toMutableMap())
+            }
+
+            private var validated: Boolean = false
+
+            /**
+             * Validates that the types of all values in this object match their expected types
+             * recursively.
+             *
+             * @throws VatSenseInvalidDataException if any value type in this object doesn't match
+             *   its expected type.
+             */
+            fun validate(): Match = apply {
+                if (validated) {
+                    return@apply
+                }
+
+                fields().ifPresent { it.values.forEach { value -> value.validate() } }
+                result()
+                score()
+                validated = true
+            }
+
+            fun isValid(): Boolean =
+                try {
+                    validate()
+                    true
+                } catch (e: VatSenseInvalidDataException) {
+                    false
+                }
+
+            /** Returns a score indicating how many valid values are contained in this object. */
+            @JvmSynthetic
+            internal fun validity(): Int =
+                (fields.asKnown().getOrNull()?.values?.sumOf { it.validity() } ?: 0) +
+                    (if (result.asKnown().isPresent) 1 else 0) +
+                    (if (score.asKnown().isPresent) 1 else 0)
+
+            /** How one detail you sent compared with the registered details. */
+            class Field
+            @JsonCreator(mode = JsonCreator.Mode.DISABLED)
+            private constructor(
+                private val result: JsonField<String>,
+                private val score: JsonField<Long>,
+                private val vies: JsonField<String>,
+                private val additionalProperties: MutableMap<String, JsonValue>,
+            ) {
+
+                @JsonCreator
+                private constructor(
+                    @JsonProperty("result")
+                    @ExcludeMissing
+                    result: JsonField<String> = JsonMissing.of(),
+                    @JsonProperty("score")
+                    @ExcludeMissing
+                    score: JsonField<Long> = JsonMissing.of(),
+                    @JsonProperty("vies") @ExcludeMissing vies: JsonField<String> = JsonMissing.of(),
+                ) : this(result, score, vies, mutableMapOf())
+
+                /**
+                 * One of "match", "partial", "no_match" or "not_applicable".
+                 *
+                 * @throws VatSenseInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun result(): Optional<String> = result.getOptional("result")
+
+                /**
+                 * @throws VatSenseInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun score(): Optional<Long> = score.getOptional("score")
+
+                /**
+                 * VIES's own answer for that detail on a live EU check ("valid", "invalid" or
+                 * "not_processed"); empty when VIES said nothing.
+                 *
+                 * @throws VatSenseInvalidDataException if the JSON field has an unexpected type
+                 *   (e.g. if the server responded with an unexpected value).
+                 */
+                fun vies(): Optional<String> = vies.getOptional("vies")
+
+                /**
+                 * Returns the raw JSON value of [result].
+                 *
+                 * Unlike [result], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("result") @ExcludeMissing fun _result(): JsonField<String> = result
+
+                /**
+                 * Returns the raw JSON value of [score].
+                 *
+                 * Unlike [score], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("score") @ExcludeMissing fun _score(): JsonField<Long> = score
+
+                /**
+                 * Returns the raw JSON value of [vies].
+                 *
+                 * Unlike [vies], this method doesn't throw if the JSON field has an unexpected
+                 * type.
+                 */
+                @JsonProperty("vies") @ExcludeMissing fun _vies(): JsonField<String> = vies
+
+                @JsonAnySetter
+                private fun putAdditionalProperty(key: String, value: JsonValue) {
+                    additionalProperties.put(key, value)
+                }
+
+                @JsonAnyGetter
+                @ExcludeMissing
+                fun _additionalProperties(): Map<String, JsonValue> =
+                    Collections.unmodifiableMap(additionalProperties)
+
+                fun toBuilder() = Builder().from(this)
+
+                companion object {
+
+                    /** Returns a mutable builder for constructing an instance of [Field]. */
+                    @JvmStatic fun builder() = Builder()
+                }
+
+                /** A builder for [Field]. */
+                class Builder internal constructor() {
+
+                    private var result: JsonField<String> = JsonMissing.of()
+                    private var score: JsonField<Long> = JsonMissing.of()
+                    private var vies: JsonField<String> = JsonMissing.of()
+                    private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
+
+                    @JvmSynthetic
+                    internal fun from(v: Field) = apply {
+                        result = v.result
+                        score = v.score
+                        vies = v.vies
+                        additionalProperties = v.additionalProperties.toMutableMap()
+                    }
+
+                    /** One of "match", "partial", "no_match" or "not_applicable". */
+                    fun result(result: String) = result(JsonField.of(result))
+
+                    /** Sets [Builder.result] to an arbitrary JSON value. */
+                    fun result(result: JsonField<String>) = apply { this.result = result }
+
+                    fun score(score: Long?) = score(JsonField.ofNullable(score))
+
+                    /** Alias for [Builder.score]. */
+                    fun score(score: Long) = score(score as Long?)
+
+                    /** Alias for calling [Builder.score] with `score.orElse(null)`. */
+                    fun score(score: Optional<Long>) = score(score.getOrNull())
+
+                    /** Sets [Builder.score] to an arbitrary JSON value. */
+                    fun score(score: JsonField<Long>) = apply { this.score = score }
+
+                    /**
+                     * VIES's own answer for that detail on a live EU check ("valid", "invalid" or
+                     * "not_processed"); empty when VIES said nothing.
+                     */
+                    fun vies(vies: String?) = vies(JsonField.ofNullable(vies))
+
+                    /** Alias for calling [Builder.vies] with `vies.orElse(null)`. */
+                    fun vies(vies: Optional<String>) = vies(vies.getOrNull())
+
+                    /** Sets [Builder.vies] to an arbitrary JSON value. */
+                    fun vies(vies: JsonField<String>) = apply { this.vies = vies }
+
+                    fun additionalProperties(additionalProperties: Map<String, JsonValue>) = apply {
+                        this.additionalProperties.clear()
+                        putAllAdditionalProperties(additionalProperties)
+                    }
+
+                    fun putAdditionalProperty(key: String, value: JsonValue) = apply {
+                        additionalProperties.put(key, value)
+                    }
+
+                    fun putAllAdditionalProperties(additionalProperties: Map<String, JsonValue>) =
+                        apply {
+                            this.additionalProperties.putAll(additionalProperties)
+                        }
+
+                    fun removeAdditionalProperty(key: String) = apply {
+                        additionalProperties.remove(key)
+                    }
+
+                    fun removeAllAdditionalProperties(keys: Set<String>) = apply {
+                        keys.forEach(::removeAdditionalProperty)
+                    }
+
+                    /** Returns an immutable instance of [Field]. */
+                    fun build(): Field =
+                        Field(result, score, vies, additionalProperties.toMutableMap())
+                }
+
+                private var validated: Boolean = false
+
+                /**
+                 * Validates that the types of all values in this object match their expected types
+                 * recursively.
+                 *
+                 * @throws VatSenseInvalidDataException if any value type in this object doesn't
+                 *   match its expected type.
+                 */
+                fun validate(): Field = apply {
+                    if (validated) {
+                        return@apply
+                    }
+
+                    result()
+                    score()
+                    vies()
+                    validated = true
+                }
+
+                fun isValid(): Boolean =
+                    try {
+                        validate()
+                        true
+                    } catch (e: VatSenseInvalidDataException) {
+                        false
+                    }
+
+                /**
+                 * Returns a score indicating how many valid values are contained in this object.
+                 */
+                @JvmSynthetic
+                internal fun validity(): Int =
+                    (if (result.asKnown().isPresent) 1 else 0) +
+                        (if (score.asKnown().isPresent) 1 else 0) +
+                        (if (vies.asKnown().isPresent) 1 else 0)
+
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) {
+                        return true
+                    }
+
+                    return other is Field &&
+                        result == other.result &&
+                        score == other.score &&
+                        vies == other.vies &&
+                        additionalProperties == other.additionalProperties
+                }
+
+                private val hashCode: Int by lazy {
+                    Objects.hash(result, score, vies, additionalProperties)
+                }
+
+                override fun hashCode(): Int = hashCode
+
+                override fun toString() =
+                    "Field{result=$result, score=$score, vies=$vies, additionalProperties=$additionalProperties}"
+            }
+
+            override fun equals(other: Any?): Boolean {
+                if (this === other) {
+                    return true
+                }
+
+                return other is Match &&
+                    fields == other.fields &&
+                    result == other.result &&
+                    score == other.score &&
+                    additionalProperties == other.additionalProperties
+            }
+
+            private val hashCode: Int by lazy {
+                Objects.hash(fields, result, score, additionalProperties)
+            }
+
+            override fun hashCode(): Int = hashCode
+
+            override fun toString() =
+                "Match{fields=$fields, result=$result, score=$score, additionalProperties=$additionalProperties}"
+        }
 
         @JsonDeserialize(using = Company.Deserializer::class)
         @JsonSerialize(using = Company.Serializer::class)
@@ -1265,17 +1730,18 @@ private constructor(
                 company == other.company &&
                 consultationNumber == other.consultationNumber &&
                 valid == other.valid &&
+                match == other.match &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(company, consultationNumber, valid, additionalProperties)
+            Objects.hash(company, consultationNumber, valid, match, additionalProperties)
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{company=$company, consultationNumber=$consultationNumber, valid=$valid, additionalProperties=$additionalProperties}"
+            "Data{company=$company, consultationNumber=$consultationNumber, valid=$valid, match=$match, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

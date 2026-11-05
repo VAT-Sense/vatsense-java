@@ -38,6 +38,7 @@ private constructor(
     private val isReverseCharge: JsonField<Boolean>,
     private val items: JsonField<List<InvoiceItem>>,
     private val notes: JsonField<String>,
+    private val originalInvoiceId: JsonField<String>,
     private val numItems: JsonField<Long>,
     private val object_: JsonField<Object>,
     private val taxPoint: JsonField<String>,
@@ -79,6 +80,9 @@ private constructor(
         @ExcludeMissing
         items: JsonField<List<InvoiceItem>> = JsonMissing.of(),
         @JsonProperty("notes") @ExcludeMissing notes: JsonField<String> = JsonMissing.of(),
+        @JsonProperty("original_invoice_id")
+        @ExcludeMissing
+        originalInvoiceId: JsonField<String> = JsonMissing.of(),
         @JsonProperty("num_items") @ExcludeMissing numItems: JsonField<Long> = JsonMissing.of(),
         @JsonProperty("object") @ExcludeMissing object_: JsonField<Object> = JsonMissing.of(),
         @JsonProperty("tax_point") @ExcludeMissing taxPoint: JsonField<String> = JsonMissing.of(),
@@ -104,6 +108,7 @@ private constructor(
         isReverseCharge,
         items,
         notes,
+        originalInvoiceId,
         numItems,
         object_,
         taxPoint,
@@ -170,7 +175,7 @@ private constructor(
     fun invoiceNumber(): Optional<String> = invoiceNumber.getOptional("invoice_number")
 
     /**
-     * Unique URL to view the invoice. Append "/pdf" to download a PDF copy.
+     * Unique, unguessable URL to view the invoice. Append "/pdf" for a PDF copy.
      *
      * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if the
      *   server responded with an unexpected value).
@@ -200,6 +205,14 @@ private constructor(
      *   server responded with an unexpected value).
      */
     fun notes(): Optional<String> = notes.getOptional("notes")
+
+    /**
+     * On a credit note that names the sale invoice it credits: that invoice's ID.
+     *
+     * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if the
+     *   server responded with an unexpected value).
+     */
+    fun originalInvoiceId(): Optional<String> = originalInvoiceId.getOptional("original_invoice_id")
 
     /**
      * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if the
@@ -356,6 +369,16 @@ private constructor(
     @JsonProperty("notes") @ExcludeMissing fun _notes(): JsonField<String> = notes
 
     /**
+     * Returns the raw JSON value of [originalInvoiceId].
+     *
+     * Unlike [originalInvoiceId], this method doesn't throw if the JSON field has an unexpected
+     * type.
+     */
+    @JsonProperty("original_invoice_id")
+    @ExcludeMissing
+    fun _originalInvoiceId(): JsonField<String> = originalInvoiceId
+
+    /**
      * Returns the raw JSON value of [numItems].
      *
      * Unlike [numItems], this method doesn't throw if the JSON field has an unexpected type.
@@ -446,6 +469,7 @@ private constructor(
         private var isReverseCharge: JsonField<Boolean> = JsonMissing.of()
         private var items: JsonField<MutableList<InvoiceItem>>? = null
         private var notes: JsonField<String> = JsonMissing.of()
+        private var originalInvoiceId: JsonField<String> = JsonMissing.of()
         private var numItems: JsonField<Long> = JsonMissing.of()
         private var object_: JsonField<Object> = JsonMissing.of()
         private var taxPoint: JsonField<String> = JsonMissing.of()
@@ -472,6 +496,7 @@ private constructor(
             isReverseCharge = invoice.isReverseCharge
             items = invoice.items.map { it.toMutableList() }
             notes = invoice.notes
+            originalInvoiceId = invoice.originalInvoiceId
             numItems = invoice.numItems
             object_ = invoice.object_
             taxPoint = invoice.taxPoint
@@ -593,7 +618,7 @@ private constructor(
             this.invoiceNumber = invoiceNumber
         }
 
-        /** Unique URL to view the invoice. Append "/pdf" to download a PDF copy. */
+        /** Unique, unguessable URL to view the invoice. Append "/pdf" for a PDF copy. */
         fun invoiceUrl(invoiceUrl: String) = invoiceUrl(JsonField.of(invoiceUrl))
 
         /**
@@ -664,6 +689,19 @@ private constructor(
          * method is primarily for setting the field to an undocumented or not yet supported value.
          */
         fun notes(notes: JsonField<String>) = apply { this.notes = notes }
+
+        /** On a credit note that names the sale invoice it credits: that invoice's ID. */
+        fun originalInvoiceId(originalInvoiceId: String?) =
+            originalInvoiceId(JsonField.ofNullable(originalInvoiceId))
+
+        /** Alias for calling [Builder.originalInvoiceId] with `originalInvoiceId.orElse(null)`. */
+        fun originalInvoiceId(originalInvoiceId: Optional<String>) =
+            originalInvoiceId(originalInvoiceId.getOrNull())
+
+        /** Sets [Builder.originalInvoiceId] to an arbitrary JSON value. */
+        fun originalInvoiceId(originalInvoiceId: JsonField<String>) = apply {
+            this.originalInvoiceId = originalInvoiceId
+        }
 
         fun numItems(numItems: Long) = numItems(JsonField.of(numItems))
 
@@ -787,6 +825,7 @@ private constructor(
                 isReverseCharge,
                 (items ?: JsonMissing.of()).map { it.toImmutable() },
                 notes,
+                originalInvoiceId,
                 numItems,
                 object_,
                 taxPoint,
@@ -828,6 +867,7 @@ private constructor(
         isReverseCharge()
         items().ifPresent { it.forEach { it.validate() } }
         notes()
+        originalInvoiceId()
         numItems()
         object_().ifPresent { it.validate() }
         taxPoint()
@@ -868,6 +908,7 @@ private constructor(
             (if (isReverseCharge.asKnown().isPresent) 1 else 0) +
             (items.asKnown().getOrNull()?.sumOf { it.validity().toInt() } ?: 0) +
             (if (notes.asKnown().isPresent) 1 else 0) +
+            (if (originalInvoiceId.asKnown().isPresent) 1 else 0) +
             (if (numItems.asKnown().isPresent) 1 else 0) +
             (object_.asKnown().getOrNull()?.validity() ?: 0) +
             (if (taxPoint.asKnown().isPresent) 1 else 0) +
@@ -2150,6 +2191,7 @@ private constructor(
             isReverseCharge == other.isReverseCharge &&
             items == other.items &&
             notes == other.notes &&
+            originalInvoiceId == other.originalInvoiceId &&
             numItems == other.numItems &&
             object_ == other.object_ &&
             taxPoint == other.taxPoint &&
@@ -2177,6 +2219,7 @@ private constructor(
             isReverseCharge,
             items,
             notes,
+            originalInvoiceId,
             numItems,
             object_,
             taxPoint,
@@ -2192,5 +2235,5 @@ private constructor(
     override fun hashCode(): Int = hashCode
 
     override fun toString() =
-        "Invoice{id=$id, business=$business, conversion=$conversion, created=$created, currencyCode=$currencyCode, customer=$customer, date=$date, hasVat=$hasVat, invoiceNumber=$invoiceNumber, invoiceUrl=$invoiceUrl, isCopy=$isCopy, isReverseCharge=$isReverseCharge, items=$items, notes=$notes, numItems=$numItems, object_=$object_, taxPoint=$taxPoint, taxType=$taxType, totals=$totals, type=$type, updated=$updated, zeroRated=$zeroRated, additionalProperties=$additionalProperties}"
+        "Invoice{id=$id, business=$business, conversion=$conversion, created=$created, currencyCode=$currencyCode, customer=$customer, date=$date, hasVat=$hasVat, invoiceNumber=$invoiceNumber, invoiceUrl=$invoiceUrl, isCopy=$isCopy, isReverseCharge=$isReverseCharge, items=$items, notes=$notes, originalInvoiceId=$originalInvoiceId, numItems=$numItems, object_=$object_, taxPoint=$taxPoint, taxType=$taxType, totals=$totals, type=$type, updated=$updated, zeroRated=$zeroRated, additionalProperties=$additionalProperties}"
 }

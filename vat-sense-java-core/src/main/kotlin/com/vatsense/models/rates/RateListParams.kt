@@ -23,6 +23,7 @@ private constructor(
     private val eu: Boolean?,
     private val ipAddress: String?,
     private val period: OffsetDateTime?,
+    private val provinces: Boolean?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -47,6 +48,13 @@ private constructor(
      */
     fun period(): Optional<OffsetDateTime> = Optional.ofNullable(period)
 
+    /**
+     * Whether to list province and territory rates (rate objects that carry a `province` property)
+     * in each country's `other` list. Pass false to leave them out, so only country-wide rates are
+     * listed; true, or omitting the parameter, lists them as before.
+     */
+    fun provinces(): Optional<Boolean> = Optional.ofNullable(provinces)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -70,6 +78,7 @@ private constructor(
         private var eu: Boolean? = null
         private var ipAddress: String? = null
         private var period: OffsetDateTime? = null
+        private var provinces: Boolean? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -79,6 +88,7 @@ private constructor(
             eu = rateListParams.eu
             ipAddress = rateListParams.ipAddress
             period = rateListParams.period
+            provinces = rateListParams.provinces
             additionalHeaders = rateListParams.additionalHeaders.toBuilder()
             additionalQueryParams = rateListParams.additionalQueryParams.toBuilder()
         }
@@ -124,6 +134,23 @@ private constructor(
 
         /** Alias for calling [Builder.period] with `period.orElse(null)`. */
         fun period(period: Optional<OffsetDateTime>) = period(period.getOrNull())
+
+        /**
+         * Whether to list province and territory rates (rate objects that carry a `province`
+         * property) in each country's `other` list. Pass false to leave them out, so only
+         * country-wide rates are listed; true, or omitting the parameter, lists them as before.
+         */
+        fun provinces(provinces: Boolean?) = apply { this.provinces = provinces }
+
+        /**
+         * Alias for [Builder.provinces].
+         *
+         * This unboxed primitive overload exists for backwards compatibility.
+         */
+        fun provinces(provinces: Boolean) = provinces(provinces as Boolean?)
+
+        /** Alias for calling [Builder.provinces] with `provinces.orElse(null)`. */
+        fun provinces(provinces: Optional<Boolean>) = provinces(provinces.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -234,6 +261,7 @@ private constructor(
                 eu,
                 ipAddress,
                 period,
+                provinces,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -248,6 +276,7 @@ private constructor(
                 eu?.let { put("eu", it.toString()) }
                 ipAddress?.let { put("ip_address", it) }
                 period?.let { put("period", DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(it)) }
+                provinces?.let { put("provinces", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -262,13 +291,22 @@ private constructor(
             eu == other.eu &&
             ipAddress == other.ipAddress &&
             period == other.period &&
+            provinces == other.provinces &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
 
     override fun hashCode(): Int =
-        Objects.hash(countryCode, eu, ipAddress, period, additionalHeaders, additionalQueryParams)
+        Objects.hash(
+            countryCode,
+            eu,
+            ipAddress,
+            period,
+            provinces,
+            additionalHeaders,
+            additionalQueryParams,
+        )
 
     override fun toString() =
-        "RateListParams{countryCode=$countryCode, eu=$eu, ipAddress=$ipAddress, period=$period, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "RateListParams{countryCode=$countryCode, eu=$eu, ipAddress=$ipAddress, period=$period, provinces=$provinces, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }
