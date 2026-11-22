@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.5.0...v0.6.0) (2026-11-22)
+
+
+### Features
+
+* **api:** batches, consultation_optional, confirmation_number and webhook signatures ([#8](https://github.com/VAT-Sense/vatsense-java/issues/8)) ([023aba7](https://github.com/VAT-Sense/vatsense-java/commit/023aba75b43a829671fc1b69a0414faa7fad9832))
+
 ## [0.5.0](https://github.com/VAT-Sense/vatsense-java/compare/v0.4.0...v0.5.0) (2026-11-05)
 
 
