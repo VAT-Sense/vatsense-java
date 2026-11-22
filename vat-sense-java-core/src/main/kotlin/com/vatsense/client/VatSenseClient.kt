@@ -3,6 +3,7 @@
 package com.vatsense.client
 
 import com.vatsense.core.ClientOptions
+import com.vatsense.services.blocking.BatchService
 import com.vatsense.services.blocking.CountryService
 import com.vatsense.services.blocking.CurrencyService
 import com.vatsense.services.blocking.InvoiceService
@@ -68,6 +69,9 @@ interface VatSenseClient {
 
     /** Temporary sandbox API keys for testing */
     fun sandbox(): SandboxService
+
+    /** Bulk validation: check many VAT numbers in one batch */
+    fun batches(): BatchService
 
     /**
      * Closes this client, relinquishing any underlying resources.

@@ -32,6 +32,7 @@ private constructor(
     private val matchCompanyName: String?,
     private val matchPostcode: String?,
     private val matchStreet: String?,
+    private val consultationOptional: Boolean?,
     private val additionalHeaders: Headers,
     private val additionalQueryParams: QueryParams,
 ) : Params {
@@ -77,6 +78,12 @@ private constructor(
     /** The street line you hold, looked for in the registered address. */
     fun matchStreet(): Optional<String> = Optional.ofNullable(matchStreet)
 
+    /**
+     * With `requesterVatNumber`: answer from a national register, with no consultation number, when
+     * VIES cannot answer, instead of the `412`.
+     */
+    fun consultationOptional(): Optional<Boolean> = Optional.ofNullable(consultationOptional)
+
     /** Additional headers to send with the request. */
     fun _additionalHeaders(): Headers = additionalHeaders
 
@@ -104,6 +111,7 @@ private constructor(
         private var matchCompanyName: String? = null
         private var matchPostcode: String? = null
         private var matchStreet: String? = null
+        private var consultationOptional: Boolean? = null
         private var additionalHeaders: Headers.Builder = Headers.builder()
         private var additionalQueryParams: QueryParams.Builder = QueryParams.builder()
 
@@ -117,6 +125,7 @@ private constructor(
             matchCompanyName = validateCheckParams.matchCompanyName
             matchPostcode = validateCheckParams.matchPostcode
             matchStreet = validateCheckParams.matchStreet
+            consultationOptional = validateCheckParams.consultationOptional
             additionalHeaders = validateCheckParams.additionalHeaders.toBuilder()
             additionalQueryParams = validateCheckParams.additionalQueryParams.toBuilder()
         }
@@ -194,6 +203,26 @@ private constructor(
 
         /** Alias for calling [Builder.matchStreet] with `matchStreet.orElse(null)`. */
         fun matchStreet(matchStreet: Optional<String>) = matchStreet(matchStreet.getOrNull())
+
+        /**
+         * Set to true with `requesterVatNumber` if you would rather have an answer than wait for a
+         * consultation number. When VIES cannot answer for the number's country and that country
+         * has a national register fallback, the answer comes from the register with no
+         * `consultationNumber`, instead of the `412`. If VIES cannot check your own
+         * `requesterVatNumber`, the number is checked without it, again with no
+         * `consultationNumber`. Leave it out if you need the consultation number as proof of the
+         * check.
+         */
+        fun consultationOptional(consultationOptional: Boolean?) = apply {
+            this.consultationOptional = consultationOptional
+        }
+
+        /**
+         * Alias for calling [Builder.consultationOptional] with
+         * `consultationOptional.orElse(null)`.
+         */
+        fun consultationOptional(consultationOptional: Optional<Boolean>) =
+            consultationOptional(consultationOptional.getOrNull())
 
         fun additionalHeaders(additionalHeaders: Headers) = apply {
             this.additionalHeaders.clear()
@@ -308,6 +337,7 @@ private constructor(
                 matchCompanyName,
                 matchPostcode,
                 matchStreet,
+                consultationOptional,
                 additionalHeaders.build(),
                 additionalQueryParams.build(),
             )
@@ -326,6 +356,7 @@ private constructor(
                 matchCompanyName?.let { put("match_company_name", it) }
                 matchPostcode?.let { put("match_postcode", it) }
                 matchStreet?.let { put("match_street", it) }
+                consultationOptional?.let { put("consultation_optional", it.toString()) }
                 putAll(additionalQueryParams)
             }
             .build()
@@ -344,6 +375,7 @@ private constructor(
             matchCompanyName == other.matchCompanyName &&
             matchPostcode == other.matchPostcode &&
             matchStreet == other.matchStreet &&
+            consultationOptional == other.consultationOptional &&
             additionalHeaders == other.additionalHeaders &&
             additionalQueryParams == other.additionalQueryParams
     }
@@ -358,10 +390,11 @@ private constructor(
             matchCompanyName,
             matchPostcode,
             matchStreet,
+            consultationOptional,
             additionalHeaders,
             additionalQueryParams,
         )
 
     override fun toString() =
-        "ValidateCheckParams{eoriNumber=$eoriNumber, requesterVatNumber=$requesterVatNumber, vatNumber=$vatNumber, matchAddress=$matchAddress, matchCity=$matchCity, matchCompanyName=$matchCompanyName, matchPostcode=$matchPostcode, matchStreet=$matchStreet, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
+        "ValidateCheckParams{eoriNumber=$eoriNumber, requesterVatNumber=$requesterVatNumber, vatNumber=$vatNumber, matchAddress=$matchAddress, matchCity=$matchCity, matchCompanyName=$matchCompanyName, matchPostcode=$matchPostcode, matchStreet=$matchStreet, consultationOptional=$consultationOptional, additionalHeaders=$additionalHeaders, additionalQueryParams=$additionalQueryParams}"
 }

@@ -3,6 +3,7 @@
 package com.vatsense.client
 
 import com.vatsense.core.ClientOptions
+import com.vatsense.services.async.BatchServiceAsync
 import com.vatsense.services.async.CountryServiceAsync
 import com.vatsense.services.async.CurrencyServiceAsync
 import com.vatsense.services.async.InvoiceServiceAsync
@@ -68,6 +69,9 @@ interface VatSenseClientAsync {
 
     /** Temporary sandbox API keys for testing */
     fun sandbox(): SandboxServiceAsync
+
+    /** Bulk validation: check many VAT numbers in one batch */
+    fun batches(): BatchServiceAsync
 
     /**
      * Closes this client, relinquishing any underlying resources.

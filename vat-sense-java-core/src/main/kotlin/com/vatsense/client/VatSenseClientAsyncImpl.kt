@@ -4,6 +4,8 @@ package com.vatsense.client
 
 import com.vatsense.core.ClientOptions
 import com.vatsense.core.getPackageVersion
+import com.vatsense.services.async.BatchServiceAsync
+import com.vatsense.services.async.BatchServiceAsyncImpl
 import com.vatsense.services.async.CountryServiceAsync
 import com.vatsense.services.async.CountryServiceAsyncImpl
 import com.vatsense.services.async.CurrencyServiceAsync
@@ -63,6 +65,10 @@ class VatSenseClientAsyncImpl(private val clientOptions: ClientOptions) : VatSen
         SandboxServiceAsyncImpl(clientOptionsWithUserAgent)
     }
 
+    private val batches: BatchServiceAsync by lazy {
+        BatchServiceAsyncImpl(clientOptionsWithUserAgent)
+    }
+
     override fun sync(): VatSenseClient = sync
 
     override fun withRawResponse(): VatSenseClientAsync.WithRawResponse = withRawResponse
@@ -90,6 +96,9 @@ class VatSenseClientAsyncImpl(private val clientOptions: ClientOptions) : VatSen
 
     /** Temporary sandbox API keys for testing */
     override fun sandbox(): SandboxServiceAsync = sandbox
+
+    /** Bulk validation: check many VAT numbers in one batch */
+    override fun batches(): BatchServiceAsync = batches
 
     override fun close() = clientOptions.close()
 
