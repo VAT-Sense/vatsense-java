@@ -221,6 +221,7 @@ private constructor(
         private val consultationNumber: JsonField<String>,
         private val valid: JsonField<Boolean>,
         private val match: JsonField<Match>,
+        private val confirmationNumber: JsonField<String>,
         private val additionalProperties: MutableMap<String, JsonValue>,
     ) {
 
@@ -232,7 +233,10 @@ private constructor(
             consultationNumber: JsonField<String> = JsonMissing.of(),
             @JsonProperty("valid") @ExcludeMissing valid: JsonField<Boolean> = JsonMissing.of(),
             @JsonProperty("match") @ExcludeMissing match: JsonField<Match> = JsonMissing.of(),
-        ) : this(company, consultationNumber, valid, match, mutableMapOf())
+            @JsonProperty("confirmation_number")
+            @ExcludeMissing
+            confirmationNumber: JsonField<String> = JsonMissing.of(),
+        ) : this(company, consultationNumber, valid, match, confirmationNumber, mutableMapOf())
 
         /**
          * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if
@@ -264,6 +268,26 @@ private constructor(
          *   the server responded with an unexpected value).
          */
         fun match(): Optional<Match> = match.getOptional("match")
+
+        /**
+         * VAT Sense's own reference for this check (beta, only for accounts in the beta). It is not
+         * an official number.
+         *
+         * @throws VatSenseInvalidDataException if the JSON field has an unexpected type (e.g. if
+         *   the server responded with an unexpected value).
+         */
+        fun confirmationNumber(): Optional<String> =
+            confirmationNumber.getOptional("confirmation_number")
+
+        /**
+         * Returns the raw JSON value of [confirmationNumber].
+         *
+         * Unlike [confirmationNumber], this method doesn't throw if the JSON field has an
+         * unexpected type.
+         */
+        @JsonProperty("confirmation_number")
+        @ExcludeMissing
+        fun _confirmationNumber(): JsonField<String> = confirmationNumber
 
         /**
          * Returns the raw JSON value of [match].
@@ -319,6 +343,7 @@ private constructor(
 
             private var company: JsonField<Company> = JsonMissing.of()
             private var consultationNumber: JsonField<String> = JsonMissing.of()
+            private var confirmationNumber: JsonField<String> = JsonMissing.of()
             private var valid: JsonField<Boolean> = JsonMissing.of()
             private var match: JsonField<Match> = JsonMissing.of()
             private var additionalProperties: MutableMap<String, JsonValue> = mutableMapOf()
@@ -327,6 +352,7 @@ private constructor(
             internal fun from(data: Data) = apply {
                 company = data.company
                 consultationNumber = data.consultationNumber
+                confirmationNumber = data.confirmationNumber
                 valid = data.valid
                 match = data.match
                 additionalProperties = data.additionalProperties.toMutableMap()
@@ -375,6 +401,22 @@ private constructor(
                 this.consultationNumber = consultationNumber
             }
 
+            /** VAT Sense's own reference for this check (beta). */
+            fun confirmationNumber(confirmationNumber: String?) =
+                confirmationNumber(JsonField.ofNullable(confirmationNumber))
+
+            /**
+             * Alias for calling [Builder.confirmationNumber] with
+             * `confirmationNumber.orElse(null)`.
+             */
+            fun confirmationNumber(confirmationNumber: Optional<String>) =
+                confirmationNumber(confirmationNumber.getOrNull())
+
+            /** Sets [Builder.confirmationNumber] to an arbitrary JSON value. */
+            fun confirmationNumber(confirmationNumber: JsonField<String>) = apply {
+                this.confirmationNumber = confirmationNumber
+            }
+
             /** Whether the VAT/EORI number is valid. */
             fun valid(valid: Boolean) = valid(JsonField.of(valid))
 
@@ -418,7 +460,14 @@ private constructor(
              * Further updates to this [Builder] will not mutate the returned instance.
              */
             fun build(): Data =
-                Data(company, consultationNumber, valid, match, additionalProperties.toMutableMap())
+                Data(
+                    company,
+                    consultationNumber,
+                    valid,
+                    match,
+                    confirmationNumber,
+                    additionalProperties.toMutableMap(),
+                )
         }
 
         private var validated: Boolean = false
@@ -439,6 +488,7 @@ private constructor(
 
             company().ifPresent { it.validate() }
             consultationNumber()
+            confirmationNumber()
             valid()
             match().ifPresent { it.validate() }
             validated = true
@@ -462,6 +512,7 @@ private constructor(
         internal fun validity(): Int =
             (company.asKnown().getOrNull()?.validity() ?: 0) +
                 (if (consultationNumber.asKnown().isPresent) 1 else 0) +
+                (if (confirmationNumber.asKnown().isPresent) 1 else 0) +
                 (if (valid.asKnown().isPresent) 1 else 0) +
                 (match.asKnown().getOrNull()?.validity() ?: 0)
 
@@ -1729,19 +1780,27 @@ private constructor(
             return other is Data &&
                 company == other.company &&
                 consultationNumber == other.consultationNumber &&
+                confirmationNumber == other.confirmationNumber &&
                 valid == other.valid &&
                 match == other.match &&
                 additionalProperties == other.additionalProperties
         }
 
         private val hashCode: Int by lazy {
-            Objects.hash(company, consultationNumber, valid, match, additionalProperties)
+            Objects.hash(
+                company,
+                consultationNumber,
+                valid,
+                match,
+                confirmationNumber,
+                additionalProperties,
+            )
         }
 
         override fun hashCode(): Int = hashCode
 
         override fun toString() =
-            "Data{company=$company, consultationNumber=$consultationNumber, valid=$valid, match=$match, additionalProperties=$additionalProperties}"
+            "Data{company=$company, consultationNumber=$consultationNumber, valid=$valid, match=$match, confirmationNumber=$confirmationNumber, additionalProperties=$additionalProperties}"
     }
 
     override fun equals(other: Any?): Boolean {

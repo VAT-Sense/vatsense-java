@@ -97,6 +97,64 @@ response.data().flatMap(d -> d.consultationNumber()).ifPresent(System.out::print
 
 > **Note:** GB requester numbers only work for GB validations, and EU requester numbers only work for EU validations. Cross-region requests are not supported.
 
+If you would rather have an answer than wait for a consultation number when VIES is down, add `.consultationOptional(true)`. Where a national register can confirm the number, you get the answer with no consultation number instead of the `412`.
+
+### Check many numbers at once (batches)
+
+A batch checks a list of VAT numbers, as the dashboard's bulk validator does with a file. Batch calls are free and each number checked counts as one request. With a test key the batch is answered from the test numbers and costs nothing.
+
+```java
+Batch batch = client.batches().create(
+    BatchCreateParams.builder()
+        .numbers(List.of("GB288305674", "FR12345678901"))
+        .reference("November customers")
+        .idempotencyKey("november-customers")
+        .build()
+).data();
+
+// Poll, or take the batch.completed webhook instead.
+Set<String> done = Set.of("complete", "paused", "expired");
+while (!done.contains(client.batches().retrieve(batch.id()).data().status().orElse(""))) {
+    Thread.sleep(10_000);
+}
+
+long after = 0;
+while (true) {
+    BatchResultsResponse.Data page = client.batches()
+        .results(batch.id(), BatchResultsParams.builder().after(after).limit(1000).build())
+        .data();
+    for (BatchResult row : page.data()) {
+        System.out.println(row.vatNumber().orElse("") + " " + row.result().orElse(""));
+    }
+    if (!page.hasMore()) break;
+    after = page.nextAfter().orElseThrow();
+}
+
+String csv = client.batches().resultsCsv(batch.id());
+```
+
+Use `.rows(List.of(BatchRow.builder().vatNumber("GB288305674").companyName("Weio Ltd").build()))` instead of `.numbers(...)` for company matching. A batch can also be paused, continued (`continueBatch`), completed and, while a draft, deleted. `client.async().batches()` returns futures.
+
+### Check a webhook's signature
+
+Every webhook event carries a `VatSense-Signature` header. Check it against the raw request body with the endpoint's signing secret before trusting the event:
+
+```java
+import com.vatsense.webhooks.Webhook;
+import com.vatsense.webhooks.WebhookSignatureException;
+
+try {
+    JsonNode event = Webhook.constructEvent(rawBody, request.getHeader(Webhook.SIGNATURE_HEADER), "whsec_...");
+    if ("batch.completed".equals(event.get("type").asText())) {
+        // ...
+    }
+} catch (WebhookSignatureException e) {
+    response.setStatus(400);
+}
+```
+
+Events more than 5 minutes old are refused (pass a `Duration` tolerance to change it). During the 24 hours after a secret is rolled, events signed with either secret are accepted.
+
 ### Find the VAT rate for a country
 
 ```java
@@ -223,6 +281,7 @@ VatSenseClient client = VatSenseOkHttpClient.builder()
 | `client.rates()`        | VAT/GST rate lookups, price calculations         |
 | `client.countries()`    | Country data and province lookups                |
 | `client.currency()`     | Exchange rates and currency conversion           |
+| `client.batches()`      | Check many VAT numbers in one batch              |
 | `client.invoice()`      | Create and manage VAT-compliant invoices         |
 | `client.usage()`        | Check your API usage                             |
 
